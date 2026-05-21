@@ -100,7 +100,11 @@ export function ComingSoon() {
   return (
     <main className="min-h-screen flex flex-col font-sans">
       <Container as="header" className="pt-8 sm:pt-10">
-        <Wordmark className="text-[22px] text-stone-900" />
+        <Wordmark className="text-[22px] text-stone-900" as="div" />
+        <p className="mt-2 font-mono text-[12px] leading-[18px] text-stone-500">
+          <em>Ojuri</em> (Yoruba: <em>ojúrí</em>) — &quot;the seeing eye.&quot;<br />
+          A witness to every transaction.
+        </p>
       </Container>
 
       <Container className="flex-1 flex flex-col justify-center py-12 sm:py-16">
@@ -247,11 +251,7 @@ export function ComingSoon() {
       </Container>
 
       <Container as="footer" className="pb-8 sm:pb-10">
-        <p className="font-mono text-[12px] leading-[18px] text-stone-500">
-          <em>Ojuri</em> (Yoruba: <em>ojúrí</em>) — &quot;the seeing eye.&quot;<br />
-          A witness to every transaction.
-        </p>
-        <p className="mt-3 font-mono text-[12px] text-stone-500">
+        <p className="font-mono text-[12px] text-stone-500">
           © 2026 Ojuri Contributors. MIT licensed.
         </p>
       </Container>
