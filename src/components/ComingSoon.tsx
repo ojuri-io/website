@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Container } from './ui/Container';
 import { Wordmark } from './ui/Wordmark';
 import { Eyebrow } from './ui/Eyebrow';
-import { LAUNCH_DATE } from '../config/launch';
+import { LAUNCH_DATE, LAUNCH_MONTH_DAY, LAUNCH_YEAR } from '../config/launch';
 
 // Google Form embed:
 //   1. Create a Google Form with a single short-answer field titled "email"
@@ -105,7 +105,7 @@ export function ComingSoon() {
 
       <Container className="flex-1 flex flex-col justify-center py-12 sm:py-16">
         <Eyebrow variant="mono" className="mb-6">
-          Coming June 7 · 2026
+          Coming {LAUNCH_MONTH_DAY} · {LAUNCH_YEAR}
         </Eyebrow>
 
         <h1 className="font-display font-semibold text-stone-900 max-w-[20ch] text-[40px] sm:text-[56px] leading-[1.08] tracking-tightest">

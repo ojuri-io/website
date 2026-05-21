@@ -1,6 +1,7 @@
 import { Container } from './ui/Container';
 import { Eyebrow } from './ui/Eyebrow';
 import { Wordmark } from './ui/Wordmark';
+import { LAUNCH_DATE_LABEL } from '../config/launch';
 
 interface FooterColProps {
   title: string;
@@ -69,7 +70,7 @@ export function Footer() {
             © 2026 Ojuri Contributors. MIT licensed.
           </div>
           <div className="font-mono text-[12px] text-stone-500">
-            v1.0 · released June 7 2026
+            v1.0 · released {LAUNCH_DATE_LABEL}
           </div>
         </div>
       </Container>

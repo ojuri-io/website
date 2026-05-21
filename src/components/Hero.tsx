@@ -2,6 +2,7 @@ import { ArrowRight, Github } from 'lucide-react';
 import { Container } from './ui/Container';
 import { Button } from './ui/Button';
 import { Eyebrow } from './ui/Eyebrow';
+import { LAUNCH_DATE_LABEL } from '../config/launch';
 
 /** Hero — witness-framed headline, supporting paragraph, two CTAs. */
 export function Hero() {
@@ -9,7 +10,7 @@ export function Hero() {
     <section className="border-b border-stone-300/70">
       <Container className="pt-20 pb-20 sm:pt-28 sm:pb-28">
         <Eyebrow className="fade-up mb-8">
-          v1.0 · MIT licensed · June 7 2026
+          v1.0 · MIT licensed · {LAUNCH_DATE_LABEL}
         </Eyebrow>
 
         <h1 className="fade-up d1 font-display font-semibold text-stone-900 max-w-[20ch] text-[44px] sm:text-[60px] leading-[1.08] tracking-tightest">
