@@ -1,0 +1,186 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================
+   Base resets
+   ============================================================= */
+html, body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--stone-300); color: var(--ink); }
+
+/* Smooth in-page anchor jumps (e.g. nav → #architecture). */
+html { scroll-behavior: smooth; }
+
+/* Skip-to-content link for keyboard users. Hidden until focused. */
+.skip-link {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--surface);
+  padding: 8px 12px;
+  border-radius: 2px;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+}
+
+/* Focus styles — preserved, not stripped. */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono    { font-family: var(--font-mono); }
+
+
+/* =============================================================
+   Motion — kept editorial. One-shot entrance + illustrative loops
+   only on the architecture diagram. Everything respects
+   prefers-reduced-motion.
+   ============================================================= */
+
+/* Entrance — one-shot transition on body.is-loaded */
+.fade-up {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+body.is-loaded .fade-up { opacity: 1; transform: none; }
+body.is-loaded .fade-up.d1 { transition-delay:  80ms; }
+body.is-loaded .fade-up.d2 { transition-delay: 200ms; }
+body.is-loaded .fade-up.d3 { transition-delay: 340ms; }
+body.is-loaded .fade-up.d4 { transition-delay: 480ms; }
+
+/* Nav underline — slides in from left on hover */
+.nav-link {
+  position: relative;
+  padding-bottom: 3px;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.nav-link:hover::after { transform: scaleX(1); }
+
+/* Blinking caret for the shell pre block */
+.caret {
+  display: inline-block;
+  width: 0.55ch;
+  background: currentColor;
+  animation: oj-caret 1.05s steps(2, start) infinite;
+  margin-left: 2px;
+  vertical-align: -1px;
+}
+@keyframes oj-caret {
+  0%, 50%   { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Numbered list items in WhatItIs — number shifts + headline nudges */
+.num-anim {
+  display: inline-block;
+  transition: color 220ms ease, transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.group:hover .num-anim {
+  color: var(--ink);
+  transform: translateX(-3px) scale(1.18);
+}
+.num-anim + div > .font-display {
+  transition: transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.group:hover .num-anim + div > .font-display {
+  transform: translateX(4px);
+}
+
+
+/* =============================================================
+   Architecture diagram — illustrative motion (packets, pulse,
+   marching dashes). CSS-driven so React doesn't have to manage
+   animation frames.
+   ============================================================= */
+
+/* Travelling packets along the SVG paths. The path is supplied
+   per-instance as a CSS custom property `--mp`. */
+.arch-packet {
+  offset-path: var(--mp);
+  offset-rotate: 0deg;
+  offset-distance: 0%;
+  animation: oj-travel var(--dur, 3s) cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes oj-travel {
+  0%   { offset-distance: 0%;   opacity: 0; }
+  8%   { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+/* Marching ants on dashed lines (the Redis feature-lookup) */
+.arch-dashed {
+  animation: oj-dash 1.2s linear infinite;
+}
+@keyframes oj-dash {
+  to { stroke-dashoffset: -12; }
+}
+
+/* Stroke pulse on RDA (signals it's the hot-path service) */
+.arch-pulse {
+  animation: oj-pulse 3.2s ease-in-out infinite;
+}
+@keyframes oj-pulse {
+  0%, 100% { stroke-opacity: 1; }
+  50%      { stroke-opacity: 0.55; }
+}
+
+
+/* =============================================================
+   Reduced motion — disable every loop and every entrance.
+   ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  .fade-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .nav-link::after { transition: none; }
+  .caret           { animation: none; opacity: 1; }
+
+  .num-anim,
+  .num-anim + div > .font-display {
+    transition: none;
+    transform: none !important;
+  }
+
+  .arch-packet { animation: none; opacity: 0; }
+  .arch-dashed { animation: none; }
+  .arch-pulse  { animation: none; }
+}

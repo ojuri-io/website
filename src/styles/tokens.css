@@ -1,0 +1,47 @@
+/* =============================================================
+   Ojuri Design Tokens — CSS custom properties.
+
+   Mirrors the Tailwind theme so non-Tailwind contexts (e.g. raw
+   <style> overrides, SVGs that need fill="var(--ink)") can read
+   the same values. Tailwind utilities are the primary surface.
+   ============================================================= */
+
+:root {
+  /* Stone scale */
+  --stone-50:  #FDFCFA;
+  --stone-100: #FAF6F0;
+  --stone-200: #F0EBE2;
+  --stone-300: #D9D2C6;
+  --stone-400: #B0A89B;
+  --stone-500: #857E72;
+  --stone-600: #5C564C;
+  --stone-700: #3F3A33;
+  --stone-800: #2A2620;
+  --stone-900: #1A1612;
+
+  /* Semantic ink + surface */
+  --surface:        var(--stone-100);
+  --surface-alt:    var(--stone-200);
+  --ink:            var(--stone-900);
+  --ink-secondary:  var(--stone-600);
+  --ink-muted:      var(--stone-500);
+  --ink-faint:      var(--stone-400);
+
+  --border:         var(--stone-300);
+  --border-medium:  var(--stone-400);
+  --border-strong:  var(--stone-700);
+
+  /* Chart accents — dashboard only */
+  --chart-allow:    #5C7A5C;
+  --chart-decline:  #A35140;
+  --chart-review:   #7A6F4A;
+
+  /* Type families (mirrors Tailwind fontFamily) */
+  --font-display: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+  --font-sans:    Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Layout */
+  --container-max:  1180px;
+  --measure:        68ch;
+}

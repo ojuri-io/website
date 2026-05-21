@@ -1,0 +1,12 @@
+{
+  "name": "Ojuri",
+  "short_name": "Ojuri",
+  "icons": [
+    { "src": "/favicon-32x32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/favicon-16x16.png", "sizes": "16x16", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "theme_color": "#FAF6F0",
+  "background_color": "#FAF6F0",
+  "display": "standalone"
+}
