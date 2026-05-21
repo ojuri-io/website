@@ -247,7 +247,11 @@ export function ComingSoon() {
       </Container>
 
       <Container as="footer" className="pb-8 sm:pb-10">
-        <p className="font-mono text-[12px] text-stone-500">
+        <p className="font-mono text-[12px] leading-[18px] text-stone-500">
+          <em>Ojuri</em> (Yoruba: <em>ojúrí</em>) — &quot;the seeing eye.&quot;<br />
+          A witness to every transaction.
+        </p>
+        <p className="mt-3 font-mono text-[12px] text-stone-500">
           © 2026 Ojuri Contributors. MIT licensed.
         </p>
       </Container>
