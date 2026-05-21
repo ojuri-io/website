@@ -47,28 +47,25 @@ export function Architecture() {
         </p>
 
         {/*
-          Flex layout. Diagram on the left takes whatever the panel
-          doesn't (`flex: 1`); panel's flex-basis transitions from 0%
-          → 35% over 460ms. Width transition would conflict with
-          flex-basis: auto on the panel; transitioning flex-basis
-          directly is the smooth path.
+          Desktop (lg+): diagram on the left, panel slides in on the right
+          via flex-basis 0% → 35%.
+          Mobile/tablet (< lg): stack — diagram full-width on top, panel
+          full-width below. The flex-basis animation would clip content
+          inside a 35% column narrower than the panel's intrinsic width.
         */}
-        <div className="mt-12 sm:mt-16 flex items-start">
-          <div className="flex-1 min-w-0">
+        <div className="mt-12 sm:mt-16 flex flex-col lg:flex-row items-start">
+          <div className="w-full flex-1 min-w-0">
             <ArchitectureDiagram selected={selected} onToggle={toggle} />
           </div>
 
           <div
-            style={{
-              flexGrow: 0,
-              flexShrink: 0,
-              flexBasis: isOpen ? '35%' : '0%',
-              minWidth: 0,
-              overflow: 'hidden',
-              transition: 'flex-basis 460ms cubic-bezier(0.4, 0, 0.2, 1)',
-              willChange: 'flex-basis',
-            }}
             aria-hidden={!isOpen}
+            className={[
+              'w-full mt-10 lg:mt-0',
+              'lg:w-auto lg:overflow-hidden lg:flex-grow-0 lg:flex-shrink-0 lg:min-w-0',
+              'lg:transition-[flex-basis] lg:duration-[460ms] lg:ease-[cubic-bezier(0.4,0,0.2,1)]',
+              isOpen ? 'lg:basis-[35%]' : 'hidden lg:block lg:basis-0',
+            ].join(' ')}
           >
             <ComponentPanel component={current} isOpen={isOpen} onClose={close} />
           </div>

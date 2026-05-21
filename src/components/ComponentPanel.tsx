@@ -37,9 +37,8 @@ export function ComponentPanel({ component, isOpen, onClose }: PanelProps) {
 
   return (
     <div
-      className="lg:sticky lg:top-12"
+      className="lg:sticky lg:top-12 lg:min-w-[300px]"
       style={{
-        minWidth: '300px',
         opacity: isOpen ? 1 : 0,
         transform: isOpen ? 'translateX(0)' : 'translateX(20px)',
         transition: isOpen
@@ -52,7 +51,7 @@ export function ComponentPanel({ component, isOpen, onClose }: PanelProps) {
       aria-live="polite"
       aria-label="Component details"
     >
-      <div className="relative border-l border-stone-300 pl-8 pr-6">
+      <div className="relative border-t border-stone-300 pt-8 pr-6 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
         <button
           ref={closeBtnRef}
           type="button"
