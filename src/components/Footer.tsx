@@ -1,6 +1,7 @@
 import { Container } from './ui/Container';
 import { Eyebrow } from './ui/Eyebrow';
 import { Wordmark } from './ui/Wordmark';
+import { Monogram } from './ui/Monogram';
 import { LAUNCH_DATE_LABEL } from '../config/launch';
 
 interface FooterColProps {
@@ -31,7 +32,10 @@ export function Footer() {
       <Container className="py-16 sm:py-20">
         <div className="grid grid-cols-12 gap-y-10 gap-x-8 sm:gap-x-12">
           <div className="col-span-12 md:col-span-5">
-            <Wordmark className="text-[28px] text-stone-900" as="div" />
+            <div className="inline-flex items-center gap-3">
+              <Monogram size={32} className="text-stone-900" aria-hidden />
+              <Wordmark className="text-[28px] text-stone-900" />
+            </div>
             <p className="mt-3 font-mono text-[12px] text-stone-500">
               <em>Ojuri</em> (Yoruba: <em>ojúrí</em>) — &quot;the seeing eye.&quot;<br />
               A witness to every transaction.
