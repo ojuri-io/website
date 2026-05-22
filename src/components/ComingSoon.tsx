@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Container } from './ui/Container';
 import { Wordmark } from './ui/Wordmark';
 import { Eyebrow } from './ui/Eyebrow';
+import { Monogram } from './ui/Monogram';
 import { LAUNCH_DATE, LAUNCH_MONTH_DAY, LAUNCH_YEAR } from '../config/launch';
 
 // Google Form embed:
@@ -100,7 +101,14 @@ export function ComingSoon() {
   return (
     <main className="min-h-screen flex flex-col font-sans">
       <Container as="header" className="pt-8 sm:pt-10">
-        <Wordmark className="text-[22px] text-stone-900" as="div" />
+        <a
+          href="#"
+          className="inline-flex items-center gap-3 text-stone-900 no-underline"
+          aria-label="Ojuri home"
+        >
+          <Monogram size={30} aria-hidden />
+          <Wordmark className="text-[22px]" />
+        </a>
         <p className="mt-2 font-mono text-[12px] leading-[18px] text-stone-500">
           <em>Ojuri</em> (Yoruba: <em>ojúrí</em>) — &quot;the seeing eye.&quot;<br />
           A witness to every transaction.

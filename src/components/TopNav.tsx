@@ -1,14 +1,20 @@
 import { Github } from 'lucide-react';
 import { Container } from './ui/Container';
 import { Wordmark } from './ui/Wordmark';
+import { Monogram } from './ui/Monogram';
 
 /** Top navigation. Static, non-sticky. */
 export function TopNav() {
   return (
     <Container as="nav" className="!max-w-container border-b border-stone-300/70">
       <div className="h-16 flex items-center justify-between">
-        <a href="#" className="text-[22px] text-stone-900 no-underline" aria-label="Ojuri home">
-          <Wordmark />
+        <a
+          href="#"
+          className="inline-flex items-center gap-2.5 text-stone-900 no-underline"
+          aria-label="Ojuri home"
+        >
+          <Monogram size={24} aria-hidden />
+          <Wordmark className="text-[22px]" />
         </a>
         <div className="flex items-center gap-6 sm:gap-8 text-[14px] text-stone-700">
           <a href="#architecture" className="nav-link no-underline">Architecture</a>
