@@ -18,16 +18,25 @@ export function TopNav() {
         </a>
         <div className="flex items-center gap-6 sm:gap-8 text-[14px] text-stone-700">
           <a href="#architecture" className="nav-link no-underline">Architecture</a>
-          <a href="https://github.com/ojuri-io/ojuri#readme" className="nav-link no-underline hidden sm:inline-block">
+          <a
+            href="https://github.com/ojuri-io/ojuri#readme"
+            className="nav-link no-underline hidden sm:inline-block"
+            data-umami-event="nav-docs"
+          >
             Docs
           </a>
-          <a href="https://github.com/ojuri-io/ojuri/discussions" className="nav-link no-underline hidden sm:inline-block">
+          <a
+            href="https://github.com/ojuri-io/ojuri/discussions"
+            className="nav-link no-underline hidden sm:inline-block"
+            data-umami-event="nav-discussions"
+          >
             Discussions
           </a>
           <a
             href="https://github.com/ojuri-io/ojuri"
             className="nav-link inline-flex items-center gap-2 no-underline group"
             aria-label="View Ojuri on GitHub"
+            data-umami-event="nav-github"
           >
             <Github
               size={15}

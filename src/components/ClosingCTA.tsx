@@ -30,7 +30,11 @@ export function ClosingCTA() {
         </p>
 
         <div className="mt-10 flex items-center gap-3 flex-wrap">
-          <Button href="https://github.com/ojuri-io/ojuri" variant="primary">
+          <Button
+            href="https://github.com/ojuri-io/ojuri"
+            variant="primary"
+            data-umami-event="closing-github"
+          >
             <Github
               size={16}
               strokeWidth={1.5}
@@ -38,7 +42,11 @@ export function ClosingCTA() {
             />
             View on GitHub
           </Button>
-          <Button href="https://github.com/ojuri-io/ojuri#readme" variant="ghost">
+          <Button
+            href="https://github.com/ojuri-io/ojuri#readme"
+            variant="ghost"
+            data-umami-event="closing-docs"
+          >
             Read the docs
             <ArrowRight
               size={16}
