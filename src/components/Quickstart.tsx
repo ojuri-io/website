@@ -6,7 +6,7 @@ const shellSnippet = `$ git clone https://github.com/ojuri-io/ojuri.git && cd oj
 $ docker compose up -d
 [+] Running 6/6  kafka  postgres  redis  rda  paa  mla
 
-$ curl -X POST http://localhost:3000/v1/predict \\
+$ curl -X POST http://localhost/v1/predict \\
     -H 'content-type: application/json' \\
     -d '{
       "transaction_id":   "550e8400-e29b-41d4-a716-446655440000",
@@ -14,7 +14,7 @@ $ curl -X POST http://localhost:3000/v1/predict \\
       "receiver_id":      "user_b",
       "amount":           1500.00,
       "transaction_type": "TRANSFER",
-      "timestamp":        1717718400,
+      "timestamp":        1717718400000,
       "segment":          "high_value"
     }'`;
 
