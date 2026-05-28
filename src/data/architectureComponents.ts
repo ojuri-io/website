@@ -37,7 +37,7 @@ export const architectureComponents: ArchitectureComponent[] = [
       'Schema validated by Zod at the edge; malformed payloads return 400 before any feature lookup.',
       'Bearer-token authentication; per-vendor rate limits enforced upstream.',
       'Caller blocks on this request — verdict, reason codes, and audit ID arrive in the response body.',
-      'Idempotent on `transaction_id`: duplicate POSTs return the cached decision rather than re-scoring.',
+      'Idempotent via the `Idempotency-Key` header — set it to your `transaction_id` and duplicate POSTs return the cached decision rather than re-scoring.',
     ],
   },
   {
