@@ -19,7 +19,7 @@ export function Hero() {
 
         <p className="fade-up d2 mt-10 sm:mt-14 max-w-measure text-[18px] sm:text-[20px] leading-[1.55] text-stone-700">
           Self-hosted, multi-agent, MIT licensed. ONNX-served XGBoost decisions at
-          p99 ≈ 4ms server-side, drift-aware retraining, and investigation reports
+          p99 ≈ 6ms server-side, drift-aware retraining, and investigation reports
           in plain language — all under your roof. No SaaS, no data egress, no
           per-call fees.
         </p>
