@@ -13,7 +13,7 @@ export function PerformanceHonestly() {
           <div className="md:col-span-8">
             <p className="font-display text-stone-900 text-[22px] sm:text-[24px] leading-[1.4] max-w-measure">
               The numbers in this page —{' '}
-              <span className="font-mono text-[18px] sm:text-[20px]">p99 ≈ 4ms</span>{' '}
+              <span className="font-mono text-[18px] sm:text-[20px]">p99 ≈ 6ms</span>{' '}
               server-side,{' '}
               <span className="font-mono text-[18px] sm:text-[20px]">≈49µs</span>{' '}
               at the model — are reference values measured on a single Apple Silicon developer
