@@ -26,13 +26,6 @@ export function TopNav() {
             Docs
           </a>
           <a
-            href="https://github.com/ojuri-io/ojuri/discussions"
-            className="nav-link no-underline hidden sm:inline-block"
-            data-umami-event="nav-discussions"
-          >
-            Discussions
-          </a>
-          <a
             href="https://github.com/ojuri-io/ojuri"
             className="nav-link inline-flex items-center gap-2 no-underline group"
             aria-label="View Ojuri on GitHub"
