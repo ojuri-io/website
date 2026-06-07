@@ -44,28 +44,25 @@ export function Footer() {
           <FooterCol
             title="Project"
             links={[
-              ['Docs',        'https://github.com/ojuri-io/ojuri#readme'],
-              ['GitHub',      'https://github.com/ojuri-io/ojuri'],
-              ['Discussions', 'https://github.com/ojuri-io/ojuri/discussions'],
-              ['Roadmap',     'https://github.com/ojuri-io/ojuri/blob/main/ROADMAP.md'],
+              ['Docs',    'https://github.com/ojuri-io/ojuri#readme'],
+              ['GitHub',  'https://github.com/ojuri-io/ojuri'],
+              ['Roadmap', 'https://github.com/ojuri-io/ojuri/blob/main/ROADMAP.md'],
             ]}
           />
           <FooterCol
             title="Operate"
             links={[
               ['Security',     'https://github.com/ojuri-io/ojuri/blob/main/SECURITY.md'],
-              ['Architecture', 'https://github.com/ojuri-io/ojuri/blob/main/ARCHITECTURE.md'],
-              ['Performance',  'https://github.com/ojuri-io/ojuri/blob/main/PERFORMANCE.md'],
+              ['Architecture', 'https://github.com/ojuri-io/ojuri/blob/main/docs/ARCHITECTURE.md'],
               ['Releases',     'https://github.com/ojuri-io/ojuri/releases'],
             ]}
           />
           <FooterCol
             title="Community"
             links={[
-              ['Contributing',     'https://github.com/ojuri-io/ojuri/blob/main/CONTRIBUTING.md'],
-              ['Code of conduct',  'https://github.com/ojuri-io/ojuri/blob/main/CODE_OF_CONDUCT.md'],
-              ['License (MIT)',    'https://github.com/ojuri-io/ojuri/blob/main/LICENSE'],
-              ['Acknowledgments',  'https://github.com/ojuri-io/ojuri/blob/main/ACKNOWLEDGMENTS.md'],
+              ['Contributing',    'https://github.com/ojuri-io/ojuri/blob/main/CONTRIBUTING.md'],
+              ['Code of conduct', 'https://github.com/ojuri-io/ojuri/blob/main/CODE_OF_CONDUCT.md'],
+              ['License (MIT)',   'https://github.com/ojuri-io/ojuri/blob/main/LICENSE'],
             ]}
           />
         </div>
