@@ -7,6 +7,7 @@ import { WhyThisExists } from './components/WhyThisExists';
 import { Quickstart } from './components/Quickstart';
 import { SeeItOperating } from './components/SeeItOperating';
 import { PerformanceHonestly } from './components/PerformanceHonestly';
+import { Changelog } from './components/Changelog';
 import { ClosingCTA } from './components/ClosingCTA';
 import { Footer } from './components/Footer';
 import { ComingSoon } from './components/ComingSoon';
@@ -54,6 +55,7 @@ export function App() {
         <Quickstart />
         <SeeItOperating />
         <PerformanceHonestly />
+        <Changelog />
         <ClosingCTA />
       </main>
       <Footer />
