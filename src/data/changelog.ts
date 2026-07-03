@@ -28,7 +28,7 @@ export const RELEASES: Release[] = [
       'Millisecond ONNX scoring on the authorization path',
       'Hot-reloaded rules engine, per-segment thresholds, decision audit log',
       'FIA investigation reports for blocked transactions, on a separate path',
-      'Sentinel operator dashboard: live decisions, review queue, model registry',
+      'Sentinel operator dashboard: live decisions, audit log, model registry',
     ],
   },
   {
@@ -36,12 +36,12 @@ export const RELEASES: Release[] = [
     date: 'June 22, 2026',
     title: 'Hardening and adopter tooling',
     summary:
-      'The first tagged release: durable state, safer defaults, and everything an adopter needs to bring their own data.',
+      'The first tagged release: durable graph state, richer rule and threshold defaults, and the tooling to bring your own data.',
     highlights: [
       'Durable transaction-graph state that survives restarts',
       'FATF rule pack, isotonic score calibration, configurable training modes',
       'Chunked training-data import so adopters can load their own history',
-      'Security pass: CORS allowlist, login rate-limiting, JWT pinning, SSRF and prompt-injection guards',
+      'Per-segment threshold defaults and rule visibility in the audit log',
     ],
   },
   {
@@ -57,7 +57,7 @@ export const RELEASES: Release[] = [
       'Live shadow scoring and a REVIEW band that turns uncertainty into labels',
     ],
     metric:
-      'Validated in a 120k-transaction benchmark: 34% of fraud caught cold → 98.8% after one label-driven retrain, at a 1.1% false-positive rate.',
+      'Validated in a 128k-transaction benchmark: 34% of fraud caught cold → 98.8% after one label-driven retrain, at a 1.1% false-positive rate.',
     current: true,
   },
   {
@@ -65,9 +65,9 @@ export const RELEASES: Release[] = [
     date: 'On the roadmap',
     title: 'Where we are headed',
     summary:
-      'The core loop is proven. Next is making it easier to deploy at scale and to encode institutional knowledge.',
+      'The core loop is proven. Next is making it easier to deploy at scale and to integrate with existing payment flows.',
     highlights: [
-      'Dynamic deny / allow lists and rule backtesting',
+      'Canary rollout by API-key cohort',
       'Helm chart and Terraform module for production deploys',
       'TypeScript and Python client SDKs',
     ],
