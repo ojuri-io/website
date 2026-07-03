@@ -1,6 +1,11 @@
 import { Container } from './ui/Container';
 import { Eyebrow } from './ui/Eyebrow';
 import { RELEASES } from '../data/changelog';
+import { useReveal } from '../utils/useReveal';
+
+// Latest first: roadmap on top, then current release, then history
+// descending. Data stays chronological so adding a release is an append.
+const ORDERED = [...RELEASES].reverse();
 
 /**
  * Release timeline — a vertical editorial changelog showing the arc from
@@ -8,6 +13,7 @@ import { RELEASES } from '../data/changelog';
  * hierarchy from weight and spacing rather than colour.
  */
 export function Changelog() {
+  const register = useReveal<HTMLLIElement>();
   return (
     <section id="changelog" className="border-b border-stone-300/70 scroll-mt-8">
       <Container className="py-20 sm:py-28">
@@ -21,10 +27,15 @@ export function Changelog() {
         </p>
 
         <ol className="mt-12 sm:mt-16">
-          {RELEASES.map((r, i) => {
-            const last = i === RELEASES.length - 1;
+          {ORDERED.map((r, i) => {
+            const last = i === ORDERED.length - 1;
             return (
-              <li key={r.version} className="relative pl-8 sm:pl-10">
+              <li
+                key={r.version}
+                ref={register}
+                style={{ transitionDelay: `${Math.min(i, 3) * 90}ms` }}
+                className="reveal relative pl-8 sm:pl-10"
+              >
                 {/* rail */}
                 {!last && (
                   <span
