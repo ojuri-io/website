@@ -67,7 +67,7 @@ export const RELEASES: Release[] = [
     summary:
       'The core loop is proven. Next is making it easier to deploy at scale and to integrate with existing payment flows.',
     highlights: [
-      'Canary rollout by API-key cohort',
+      'Canary traffic split by API-key cohort',
       'Helm chart and Terraform module for production deploys',
       'TypeScript and Python client SDKs',
     ],
