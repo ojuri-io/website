@@ -58,6 +58,21 @@ export const RELEASES: Release[] = [
     ],
     metric:
       'Validated in a 128k-transaction benchmark: 34% of fraud caught cold → 98.8% after one label-driven retrain, at a 1.1% false-positive rate.',
+  },
+  {
+    version: 'v1.3.0',
+    date: 'July 7, 2026',
+    title: 'Measured, then hardened',
+    summary:
+      'An independent efficacy validation drove this release: correctness gaps between the platform and its own contracts are fixed, and new behavioral rules turn the graph and velocity signals into verdicts the model misses on trusted, authenticated traffic.',
+    highlights: [
+      'Behavioral rule pack — velocity spikes and fan-out sprays routed to review, guarded so mobile-money agents and payroll stay clean',
+      'Fresh installs now register the shipped model and per-transaction-type thresholds out of the box',
+      'Context-field dropout in training, plus a load-time probe that flags a model keying on integration context instead of behaviour',
+      'Reworked Sentinel rule editor: catalogue-aware variable validation and a searchable, grouped variable picker',
+    ],
+    metric:
+      'The behavioral rules lift velocity-anomaly recall from 0 to 0.80 in the validation harness — with zero added false positives on agent-network, payroll, airtime, and remittance traffic.',
     current: true,
   },
   {
