@@ -161,7 +161,7 @@ export function ArchitectureDiagram({ selected, onToggle }: DiagramProps) {
         <line x1={190} y1={85} x2={296} y2={85} stroke={ink} strokeWidth={1.5} markerEnd="url(#ar-ink)" />
         <line x1={500} y1={85} x2={606} y2={85} stroke={ink} strokeWidth={1.5} markerEnd="url(#ar-ink)" />
         <text x={553} y={73} textAnchor="middle" fontFamily='"JetBrains Mono", monospace' fontSize={11} fill={stone6}>
-          p99 ≈ 4ms
+          p99 ≈ 6ms
         </text>
 
         {/* RDA → Kafka */}
