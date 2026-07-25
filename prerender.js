@@ -13,11 +13,33 @@ const { render, headParts, PAGE_PATHS } = await import(
 const outPath = (route) =>
   route === '/' ? join(dist, 'index.html') : join(dist, route, 'index.html');
 
+// The preloader lives in index.html but should only run on the landing page.
+// On '/', keep it and drop the marker comments; elsewhere, strip it entirely.
+const PRELOADER_BLOCKS = [
+  ['<!--preloader-head-start-->', '<!--preloader-head-end-->'],
+  ['<!--preloader-body-start-->', '<!--preloader-body-end-->'],
+];
+
+function applyPreloader(pageHtml, route) {
+  for (const [open, close] of PRELOADER_BLOCKS) {
+    if (route === '/') {
+      pageHtml = pageHtml.split(open).join('').split(close).join('');
+      continue;
+    }
+    const start = pageHtml.indexOf(open);
+    const end = pageHtml.indexOf(close);
+    if (start !== -1 && end !== -1) {
+      pageHtml = pageHtml.slice(0, start) + pageHtml.slice(end + close.length);
+    }
+  }
+  return pageHtml;
+}
+
 for (const route of PAGE_PATHS) {
   const html = render(route);
   const { title, description, extras } = headParts(route);
 
-  const page = template
+  let page = template
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`)
     .replace(
       /<meta name="description"[^>]*\/?>/,
@@ -25,6 +47,7 @@ for (const route of PAGE_PATHS) {
     )
     .replace('<!--app-head-->', extras)
     .replace('<!--app-html-->', html);
+  page = applyPreloader(page, route);
 
   const file = outPath(route);
   mkdirSync(dirname(file), { recursive: true });

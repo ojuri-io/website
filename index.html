@@ -37,8 +37,21 @@
     <!-- Umami — cookieless analytics. -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="cbe11628-be87-48a4-87ea-f974b948115a"></script>
 
-    <!-- Preloader (inline so it paints before React/CSS bundle loads). -->
+    <!--preloader-head-start-->
+    <!-- Preloader (inline so it paints before React/CSS bundle loads).
+         Landing page only (stripped from other routes by prerender.js);
+         shown once per browser session via sessionStorage. -->
+    <script>
+      try {
+        if (sessionStorage.getItem('oj_preloaded')) {
+          document.documentElement.classList.add('oj-skip-preloader');
+        } else {
+          sessionStorage.setItem('oj_preloaded', '1');
+        }
+      } catch (e) {}
+    </script>
     <style>
+      .oj-skip-preloader .oj-preloader { display: none !important; }
       .oj-preloader {
         position: fixed;
         inset: 0;
@@ -135,8 +148,10 @@
         .oj-rule { transform: scaleX(1) !important; }
       }
     </style>
+    <!--preloader-head-end-->
   </head>
   <body>
+    <!--preloader-body-start-->
     <div class="oj-preloader" id="ojPreloader" role="status" aria-live="polite" aria-label="Loading Ojuri">
       <div class="oj-lockup">
         <svg class="oj-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -169,6 +184,7 @@
         };
       })();
     </script>
+    <!--preloader-body-end-->
 
     <a href="#main" class="skip-link">Skip to content</a>
     <div id="root"><!--app-html--></div>
