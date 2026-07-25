@@ -6,21 +6,16 @@
 
     <title>Ojuri — Fraud detection. Open source and self-hosted.</title>
     <meta name="description" content="Self-hosted, multi-agent fraud detection. ONNX-served XGBoost at p99 ≈ 6ms server-side. MIT licensed." />
-    <link rel="canonical" href="https://ojuri.io/" />
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Ojuri — Fraud detection. Open source and self-hosted." />
-    <meta property="og:description" content="Self-hosted, multi-agent. ONNX-served XGBoost at p99 ≈ 6ms server-side. MIT licensed." />
+    <!-- Open Graph / Twitter — invariant tags. Per-page title, description,
+         canonical, og/twitter text, and JSON-LD are injected at build time
+         by prerender.js at the app-head marker below. -->
     <meta property="og:image" content="https://ojuri.io/og-image.png" />
-    <meta property="og:url" content="https://ojuri.io" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Ojuri" />
-
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ojuri — Fraud detection. Open source and self-hosted." />
-    <meta name="twitter:description" content="Self-hosted, multi-agent. ONNX-served XGBoost at p99 ≈ 6ms server-side. MIT licensed." />
     <meta name="twitter:image" content="https://ojuri.io/og-image.png" />
+    <!--app-head-->
 
     <!-- Favicons — SVG first for modern browsers; PNG/ICO fallbacks for the rest. -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -176,7 +171,7 @@
     </script>
 
     <a href="#main" class="skip-link">Skip to content</a>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/src/entry-client.tsx"></script>
   </body>
 </html>

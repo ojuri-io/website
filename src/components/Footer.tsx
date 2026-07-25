@@ -31,7 +31,7 @@ export function Footer() {
     <footer>
       <Container className="py-16 sm:py-20">
         <div className="grid grid-cols-12 gap-y-10 gap-x-8 sm:gap-x-12">
-          <div className="col-span-12 md:col-span-5">
+          <div className="col-span-12 md:col-span-4">
             <div className="inline-flex items-center gap-3">
               <Monogram size={32} className="text-stone-900" aria-hidden />
               <Wordmark className="text-[28px] text-stone-900" />
@@ -41,6 +41,16 @@ export function Footer() {
               A witness to every transaction.
             </p>
           </div>
+          <FooterCol
+            title="Learn"
+            links={[
+              ['Ojuri vs. SaaS', '/compare'],
+              ['RDA — real-time detection', '/docs/rda'],
+              ['PAA — pattern analysis', '/docs/paa'],
+              ['MLA — model learning', '/docs/mla'],
+              ['FIA — investigation', '/docs/fia'],
+            ]}
+          />
           <FooterCol
             title="Project"
             links={[

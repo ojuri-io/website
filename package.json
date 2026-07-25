@@ -6,7 +6,7 @@
   "description": "Marketing site for Ojuri — open source fraud detection.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && vite build --ssr src/entry-server.tsx --outDir dist/server && node prerender.js",
     "preview": "vite preview"
   },
   "dependencies": {

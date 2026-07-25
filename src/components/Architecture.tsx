@@ -6,6 +6,13 @@ import { Eyebrow } from './ui/Eyebrow';
 import { ArchitectureDiagram } from './ArchitectureDiagram';
 import { ComponentPanel } from './ComponentPanel';
 
+const deepDives: Array<[string, string]> = [
+  ['RDA', '/docs/rda'],
+  ['PAA', '/docs/paa'],
+  ['MLA', '/docs/mla'],
+  ['FIA', '/docs/fia'],
+];
+
 /**
  * The architecture section. Renders the section header + a flex
  * layout (diagram on the left, slide-out panel on the right).
@@ -44,6 +51,17 @@ export function Architecture() {
         </h2>
         <p className="mt-3 font-mono text-[13px] text-stone-500">
           Click any component for its role, scope, and tech specifics.
+        </p>
+        <p className="mt-3 text-[13px] text-stone-500">
+          Deep dives:{' '}
+          {deepDives.map(([label, href], i) => (
+            <span key={href}>
+              {i > 0 && <span className="text-stone-300"> · </span>}
+              <a href={href} className="font-mono text-stone-700 hover:text-stone-900 no-underline">
+                {label}
+              </a>
+            </span>
+          ))}
         </p>
 
         {/*
