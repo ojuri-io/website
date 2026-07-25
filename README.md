@@ -11,8 +11,14 @@ Live at [ojuri.io](https://ojuri.io).
 - **Tailwind CSS** with custom design tokens (Stone scale, Source Serif 4 /
   Inter / JetBrains Mono, brand spacing / radii)
 - **Lucide React** icons
-- No state-management library, no routing library, no CMS, no analytics.
-  All copy is inline in components.
+- No state-management library, no router library, no CMS. All copy is inline
+  in components.
+- **Static prerendering (SSG).** Every route is rendered to real HTML at build
+  time (`src/entry-server.tsx` → `prerender.js`) so search and AI crawlers get
+  full content, not an empty `#root`. The client hydrates that markup
+  (`src/entry-client.tsx`); cross-page navigation is plain `<a>` — no client
+  router. Per-page `<title>`, description, canonical, and JSON-LD come from
+  `src/seo/pages.ts`.
 
 ## Local development
 
@@ -24,9 +30,16 @@ npm run dev          # http://localhost:5173
 ## Build
 
 ```bash
-npm run build        # outputs to dist/
+npm run build        # tsc → client build → SSR build → prerender to dist/
 npm run preview      # serve the build locally on 4173
 ```
+
+`npm run build` runs four steps: type-check, the client bundle, an SSR bundle
+(`dist/server/`, deleted after use), then `prerender.js`, which writes one
+static `index.html` per route (`/`, `/compare`, `/docs/{rda,paa,mla,fia}`).
+Routes are declared in `src/seo/pages.ts`; add a page there and in
+`src/routes.tsx` and it is prerendered automatically. Keep `public/sitemap.xml`
+in sync.
 
 ## Deployment
 
@@ -58,11 +71,17 @@ public/             # Static files served at the root
 
 src/
   components/       # One file per page section + ui/ primitives
-  data/             # architectureComponents.ts (the 10 panel objects)
+  pages/            # Compare.tsx, DocPage.tsx (the /compare + /docs/* routes)
+  data/             # architectureComponents.ts, docsPages.ts
+  seo/              # pages.ts — per-route title/description/canonical/JSON-LD
   styles/           # tokens.css (CSS custom properties) + globals.css
   utils/            # renderInlineMono.tsx — parses `backtick` syntax
-  App.tsx           # Assembles all sections
-  main.tsx          # Root mount
+  App.tsx           # Assembles the home page sections
+  routes.tsx        # matchRoute(pathname) → the page element
+  entry-client.tsx  # Hydrates prerendered markup (or client-renders in dev)
+  entry-server.tsx  # renderToString for the prerender step
+
+prerender.js        # Post-build: writes static HTML per route into dist/
 
 .github/workflows/
   deploy.yml        # GitHub Pages deploy

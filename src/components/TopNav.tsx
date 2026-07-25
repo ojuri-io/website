@@ -9,7 +9,7 @@ export function TopNav() {
     <Container as="nav" className="!max-w-container border-b border-stone-300/70">
       <div className="h-16 flex items-center justify-between">
         <a
-          href="#"
+          href="/"
           className="inline-flex items-center gap-2.5 text-stone-900 no-underline"
           aria-label="Ojuri home"
         >
@@ -17,8 +17,9 @@ export function TopNav() {
           <Wordmark className="text-[22px]" />
         </a>
         <div className="flex items-center gap-6 sm:gap-8 text-[14px] text-stone-700">
-          <a href="#architecture" className="nav-link no-underline">Architecture</a>
-          <a href="#changelog" className="nav-link no-underline hidden sm:inline-block">Changelog</a>
+          <a href="/#architecture" className="nav-link no-underline">Architecture</a>
+          <a href="/compare" className="nav-link no-underline hidden sm:inline-block">Compare</a>
+          <a href="/#changelog" className="nav-link no-underline hidden sm:inline-block">Changelog</a>
           <a
             href="https://github.com/ojuri-io/ojuri#readme"
             className="nav-link no-underline hidden sm:inline-block"
