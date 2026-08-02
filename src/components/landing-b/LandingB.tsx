@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { ArrowDown, ArrowRight, Copy, Github } from 'lucide-react';
 import { Wordmark } from '../ui/Wordmark';
+import { EMAIL_RE, submitEmailSignup } from '../../utils/emailSignup';
 import { ArchitectureSection } from './ArchitectureSection';
 import { Marker, SECTIONS, Shell } from './primitives';
 
@@ -701,7 +702,7 @@ function Disclosure() {
               FIA can each be unavailable without affecting authorization.
             </p>
             <p className="mt-4 text-[13.5px] leading-[22px] text-stone-500 max-w-measure">
-              See <a href="https://github.com/ojuri-io/ojuri/blob/main/ARCHITECTURE.md" className="underline decoration-stone-700 hover:decoration-stone-300">ARCHITECTURE.md</a> for
+              See <a href="https://github.com/ojuri-io/ojuri/blob/main/docs/ARCHITECTURE.md" className="underline decoration-stone-700 hover:decoration-stone-300">ARCHITECTURE.md</a> for
               the load-test method and the per-feature performance breakdown.
             </p>
           </div>
@@ -714,9 +715,32 @@ function Disclosure() {
 function Closing() {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
-  const submit = (e: FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (email.trim()) setSent(true);
+    // Honeypot: a visually hidden "website" field. Real users can't reach it,
+    // so any value means a bot — show success but skip the POST.
+    const honeypot = new FormData(e.currentTarget).get('website')?.toString() ?? '';
+    if (honeypot) {
+      setSent(true);
+      return;
+    }
+    const value = email.trim();
+    if (!EMAIL_RE.test(value)) {
+      setError("That doesn't look like a valid email.");
+      return;
+    }
+    setError(null);
+    setSubmitting(true);
+    try {
+      await submitEmailSignup(value);
+    } catch {
+      // no-cors swallows errors — treat as sent either way.
+    }
+    setSubmitting(false);
+    setSent(true);
   };
 
   return (
@@ -759,15 +783,22 @@ function Closing() {
                 Noted — {email}. Nothing else will arrive until there’s something worth sending.
               </p>
             ) : (
-              <form onSubmit={submit} className="flex items-stretch gap-3 flex-wrap">
+              <form onSubmit={submit} noValidate className="flex items-stretch gap-3 flex-wrap">
                 <input
-                  type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                  type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"
+                  className="hidden" onChange={() => {}}
+                />
+                <input
+                  type="email" name="email" required value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (error) setError(null); }}
                   placeholder="you@company.com" aria-label="Email address"
+                  aria-invalid={error ? true : undefined}
                   className="h-11 px-4 min-w-[250px] flex-1 bg-transparent border border-stone-700 rounded-sm text-[14px] text-stone-100 placeholder:text-stone-600 focus:outline-none focus:border-stone-400 transition-colors"
                 />
-                <button type="submit" className="group inline-flex items-center gap-2 h-11 px-5 bg-[#C4694F] text-stone-50 text-[14px] font-medium rounded-sm hover:bg-[#B35F46] transition-colors">
-                  Keep me posted <ArrowRight size={16} {...ICON} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <button type="submit" disabled={submitting} className="group inline-flex items-center gap-2 h-11 px-5 bg-[#C4694F] text-stone-50 text-[14px] font-medium rounded-sm hover:bg-[#B35F46] disabled:opacity-60 transition-colors">
+                  {submitting ? 'Sending…' : 'Keep me posted'} <ArrowRight size={16} {...ICON} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
+                {error && <p className="w-full font-mono text-[12px] text-[#C4694F]">{error}</p>}
               </form>
             )}
           </div>
@@ -777,13 +808,13 @@ function Closing() {
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: string[] }) {
+function FooterCol({ title, links }: { title: string; links: Array<[string, string]> }) {
   return (
     <div className="col-span-6 md:col-span-2">
       <div className="text-[11px] uppercase tracking-label font-medium text-stone-500 mb-4">{title}</div>
       <ul className="flex flex-col gap-2.5">
-        {links.map((l) => (
-          <li key={l}><a href="#" className="text-[13.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">{l}</a></li>
+        {links.map(([label, href]) => (
+          <li key={label}><a href={href} className="text-[13.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">{label}</a></li>
         ))}
       </ul>
     </div>
@@ -801,9 +832,21 @@ function FooterB() {
               <em>Ojuri</em> (Yoruba: <em>ojúrí</em>) — “the seeing eye.”<br />A witness to every transaction.
             </p>
           </div>
-          <FooterCol title="Project" links={['Docs', 'GitHub', 'Discussions', 'Roadmap']} />
-          <FooterCol title="Operate" links={['Security', 'Architecture', 'Performance', 'Releases']} />
-          <FooterCol title="Community" links={['Contributing', 'Code of conduct', 'License (MIT)', 'Acknowledgments']} />
+          <FooterCol title="Project" links={[
+            ['Docs', 'https://github.com/ojuri-io/ojuri#readme'],
+            ['GitHub', 'https://github.com/ojuri-io/ojuri'],
+            ['Roadmap', 'https://github.com/ojuri-io/ojuri/blob/main/ROADMAP.md'],
+          ]} />
+          <FooterCol title="Operate" links={[
+            ['Security', 'https://github.com/ojuri-io/ojuri/blob/main/SECURITY.md'],
+            ['Architecture', 'https://github.com/ojuri-io/ojuri/blob/main/docs/ARCHITECTURE.md'],
+            ['Releases', 'https://github.com/ojuri-io/ojuri/releases'],
+          ]} />
+          <FooterCol title="Community" links={[
+            ['Contributing', 'https://github.com/ojuri-io/ojuri/blob/main/CONTRIBUTING.md'],
+            ['Code of conduct', 'https://github.com/ojuri-io/ojuri/blob/main/CODE_OF_CONDUCT.md'],
+            ['License (MIT)', 'https://github.com/ojuri-io/ojuri/blob/main/LICENSE'],
+          ]} />
         </div>
         <div className="mt-20 pt-8 border-t border-stone-800 flex items-center justify-between gap-6 flex-wrap">
           <div className="font-mono text-[11.5px] text-stone-600">© 2026 Ojuri Contributors. MIT licensed.</div>
