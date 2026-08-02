@@ -5,23 +5,7 @@ import { Wordmark } from './ui/Wordmark';
 import { Eyebrow } from './ui/Eyebrow';
 import { Monogram } from './ui/Monogram';
 import { LAUNCH_DATE, LAUNCH_MONTH_DAY, LAUNCH_YEAR } from '../config/launch';
-
-// Google Form embed:
-//   1. Create a Google Form with a single short-answer field titled "email"
-//   2. In the form editor, click ⋮ → "Get pre-filled link"
-//   3. Type any value into the email field, click "Get link"
-//   4. The link looks like:
-//        https://docs.google.com/forms/d/e/<FORM_ID>/viewform?entry.<FIELD_ID>=test%40example.com
-//   5. Replace the constants below with FORM_ID and the entry.XXXX field ID.
-const GOOGLE_FORM_ID = '1FAIpQLScELODEJk1-Ge9AH5kxwLHuVERBrkGPIMQM1yt9byGolE0blg';
-const GOOGLE_FORM_EMAIL_FIELD = 'entry.655310729';
-
-// Practical email regex: one or more non-whitespace/@ chars, then @,
-// then one or more non-whitespace/@ chars, then a dot, then a TLD.
-// Catches the common bad inputs (missing @, missing TLD, whitespace,
-// multiple @s) without being so strict it rejects edge-case-but-valid
-// addresses (RFC 5322 in full is not practical client-side).
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { EMAIL_RE, submitEmailSignup } from '../utils/emailSignup';
 
 interface TimeLeft {
   launched: boolean;
@@ -85,12 +69,7 @@ export function ComingSoon() {
     setError(null);
     setSubmitting(true);
     try {
-      // Google Forms accepts cross-origin POSTs in no-cors mode. We can't
-      // read the response, but the submission lands in the form's responses.
-      const url = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
-      const body = new FormData();
-      body.append(GOOGLE_FORM_EMAIL_FIELD, email);
-      await fetch(url, { method: 'POST', mode: 'no-cors', body });
+      await submitEmailSignup(email);
     } catch {
       // no-cors swallows errors — show success either way.
     }
@@ -102,7 +81,7 @@ export function ComingSoon() {
     <main className="min-h-screen flex flex-col font-sans">
       <Container as="header" className="pt-8 sm:pt-10">
         <a
-          href="#"
+          href="/"
           className="inline-flex items-center gap-3 text-stone-900 no-underline"
           aria-label="Ojuri home"
         >
