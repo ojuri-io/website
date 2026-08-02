@@ -1,15 +1,5 @@
 import { useEffect, useState } from 'react';
-import { TopNav } from './components/TopNav';
-import { Hero } from './components/Hero';
-import { WhatItIs } from './components/WhatItIs';
-import { Architecture } from './components/Architecture';
-import { WhyThisExists } from './components/WhyThisExists';
-import { Quickstart } from './components/Quickstart';
-import { SeeItOperating } from './components/SeeItOperating';
-import { PerformanceHonestly } from './components/PerformanceHonestly';
-import { Changelog } from './components/Changelog';
-import { ClosingCTA } from './components/ClosingCTA';
-import { Footer } from './components/Footer';
+import { LandingB } from './components/landing-b/LandingB';
 import { ComingSoon } from './components/ComingSoon';
 import { LAUNCH_DATE, isComingSoonMode } from './config/launch';
 
@@ -42,23 +32,5 @@ export function App() {
 
   if (showComingSoon) return <ComingSoon />;
 
-  return (
-    <>
-      <header>
-        <TopNav />
-      </header>
-      <main id="main" className="font-sans">
-        <Hero />
-        <WhatItIs />
-        <Architecture />
-        <WhyThisExists />
-        <Quickstart />
-        <SeeItOperating />
-        <PerformanceHonestly />
-        <Changelog />
-        <ClosingCTA />
-      </main>
-      <Footer />
-    </>
-  );
+  return <LandingB />;
 }

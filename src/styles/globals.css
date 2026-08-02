@@ -133,6 +133,22 @@ body.is-loaded .fade-up.d4 { transition-delay: 480ms; }
 
 
 /* =============================================================
+   Live decision stream (landing hero) — pulsing status dot and a
+   short entrance on the newest row as it enters the window.
+   ============================================================= */
+.pulse-dot { animation: oj-pulse-dot 1.8s ease-in-out infinite; }
+@keyframes oj-pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.25; }
+}
+.stream-row:last-child { animation: oj-stream-in 0.45s ease both; }
+@keyframes oj-stream-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+
+/* =============================================================
    Architecture diagram — illustrative motion (packets, pulse,
    marching dashes). CSS-driven so React doesn't have to manage
    animation frames.
@@ -200,4 +216,7 @@ body.is-loaded .fade-up.d4 { transition-delay: 480ms; }
   .arch-packet { animation: none; opacity: 0; }
   .arch-dashed { animation: none; }
   .arch-pulse  { animation: none; }
+
+  .pulse-dot   { animation: none; opacity: 1; }
+  .stream-row:last-child { animation: none; }
 }
