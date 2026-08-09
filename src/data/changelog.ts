@@ -73,6 +73,21 @@ export const RELEASES: Release[] = [
     ],
     metric:
       'The behavioral rules lift velocity-anomaly recall from 0 to 0.80 in the validation harness — with zero added false positives on agent-network, payroll, airtime, and remittance traffic.',
+  },
+  {
+    version: 'v1.4.0',
+    date: 'August 9, 2026',
+    title: 'Every line reviewed',
+    summary:
+      'We reviewed the entire platform line by line and fixed all 45 issues we found, verifying each fix on a running system. The release also adds an optional stronger audit mode: every decision is permanently recorded before the customer gets an answer, so no record is ever lost — even if a server crashes mid-request.',
+    highlights: [
+      'If the scoring engine fails, transactions go to human review instead of being declined — a customer is never rejected because of an internal outage',
+      'Removing someone’s access or changing their role now takes effect immediately, not at their next login',
+      'Choose how many detection servers to run with a single setting — no config surgery to scale up',
+      'More trustworthy scores and safer operations: calibrated probabilities now reach serving, and the graph service protects itself from being run twice by mistake',
+    ],
+    metric:
+      'Verified under load after the fixes: 2,000 requests, every single one succeeded, and 99 out of 100 answered within 85 ms — down from 295 ms before.',
     current: true,
   },
   {

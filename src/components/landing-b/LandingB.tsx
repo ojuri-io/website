@@ -34,7 +34,7 @@ function Rail({ active }: { active: string }) {
           <Github size={14} {...ICON} className="transition-transform duration-300 group-hover:rotate-[-8deg]" /> GitHub
         </a>
         <a href="https://github.com/ojuri-io/ojuri#readme" className="text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">Docs</a>
-        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.3.0</div>
+        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.4.0</div>
       </div>
     </aside>
   );
@@ -128,7 +128,7 @@ function Hero() {
       <Shell className="pt-20 pb-20 lg:pt-28 lg:pb-24">
         <div className="fade-up flex flex-wrap items-center gap-3 mb-9">
           <span className="inline-flex items-center shrink-0 whitespace-nowrap h-6 px-2.5 border border-stone-700 rounded-full font-mono text-[10.5px] uppercase tracking-label text-stone-400">Open source</span>
-          <span className="text-[11px] uppercase tracking-label font-medium text-stone-500">Fraud detection for fintech · MIT · v1.3</span>
+          <span className="text-[11px] uppercase tracking-label font-medium text-stone-500">Fraud detection for fintech · MIT · v1.4</span>
         </div>
 
         <h1 className="fade-up d1 font-display font-semibold text-stone-50 max-w-[18ch] text-[clamp(40px,5.6vw,68px)] leading-[1.04] tracking-tightest">
@@ -580,7 +580,19 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    tag: 'v1.3.0', date: 'July 7, 2026', state: 'current',
+    tag: 'v1.4.0', date: 'August 9, 2026', state: 'current',
+    head: 'Every line reviewed',
+    body: 'We reviewed the entire platform line by line and fixed all 45 issues we found, verifying each fix on a running system. The release also adds an optional stronger audit mode: every decision is permanently recorded before the customer gets an answer, so no record is ever lost — even if a server crashes mid-request.',
+    points: [
+      'If the scoring engine fails, transactions go to human review instead of being declined — a customer is never rejected because of an internal outage',
+      'Removing someone’s access or changing their role now takes effect immediately, not at their next login',
+      'Choose how many detection servers to run with a single setting — no config surgery to scale up',
+      'More trustworthy scores and safer operations: calibrated probabilities now reach serving, and the graph service protects itself from being run twice by mistake',
+    ],
+    note: 'Verified under load after the fixes: 2,000 requests, every single one succeeded, and 99 out of 100 answered within 85 ms — down from 295 ms before.',
+  },
+  {
+    tag: 'v1.3.0', date: 'July 7, 2026',
     head: 'Measured, then hardened',
     body: 'An independent efficacy validation drove this release: correctness gaps between the platform and its own contracts are fixed, and new behavioral rules turn the graph and velocity signals into verdicts the model misses on trusted, authenticated traffic.',
     points: [
@@ -850,7 +862,7 @@ function FooterB() {
         </div>
         <div className="mt-20 pt-8 border-t border-stone-800 flex items-center justify-between gap-6 flex-wrap">
           <div className="font-mono text-[11.5px] text-stone-600">© 2026 Ojuri Contributors. MIT licensed.</div>
-          <div className="font-mono text-[11.5px] text-stone-600">v1.3.0 · released July 7 2026</div>
+          <div className="font-mono text-[11.5px] text-stone-600">v1.4.0 · released August 9 2026</div>
         </div>
       </Shell>
     </footer>
