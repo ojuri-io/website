@@ -34,7 +34,7 @@ function Rail({ active }: { active: string }) {
           <Github size={14} {...ICON} className="transition-transform duration-300 group-hover:rotate-[-8deg]" /> GitHub
         </a>
         <a href="https://github.com/ojuri-io/ojuri#readme" className="text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">Docs</a>
-        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.3.0</div>
+        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.4.0</div>
       </div>
     </aside>
   );
@@ -128,7 +128,7 @@ function Hero() {
       <Shell className="pt-20 pb-20 lg:pt-28 lg:pb-24">
         <div className="fade-up flex flex-wrap items-center gap-3 mb-9">
           <span className="inline-flex items-center shrink-0 whitespace-nowrap h-6 px-2.5 border border-stone-700 rounded-full font-mono text-[10.5px] uppercase tracking-label text-stone-400">Open source</span>
-          <span className="text-[11px] uppercase tracking-label font-medium text-stone-500">Fraud detection for fintech · MIT · v1.3</span>
+          <span className="text-[11px] uppercase tracking-label font-medium text-stone-500">Fraud detection for fintech · MIT · v1.4</span>
         </div>
 
         <h1 className="fade-up d1 font-display font-semibold text-stone-50 max-w-[18ch] text-[clamp(40px,5.6vw,68px)] leading-[1.04] tracking-tightest">
@@ -580,7 +580,19 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    tag: 'v1.3.0', date: 'July 7, 2026', state: 'current',
+    tag: 'v1.4.0', date: 'August 9, 2026', state: 'current',
+    head: 'Audited to the line',
+    body: 'A line-by-line architecture review — 45 findings across three rounds, each re-verified against a live stack — drove this release, alongside an opt-in log-first audit pipeline that makes every decision durable in Kafka before the caller sees it.',
+    points: [
+      'Log-first audit pipeline (opt-in): decision events acknowledged by Kafka before the response, audit table materialised from the log',
+      'Infrastructure failure routes to human review, not customer declines — the inference breaker fallback is REVIEW',
+      'Role and permission changes apply to live sessions — deactivating a user actually cuts them off',
+      'Score calibration reaches serving, PAA takes a leader lease, and the RDA replica count is configurable',
+    ],
+    note: 'Re-verified post-fix: 2,000-request load test, all HTTP 200, p99 84.5 ms at 16-way concurrency — down from the 295 ms pre-fix baseline.',
+  },
+  {
+    tag: 'v1.3.0', date: 'July 7, 2026',
     head: 'Measured, then hardened',
     body: 'An independent efficacy validation drove this release: correctness gaps between the platform and its own contracts are fixed, and new behavioral rules turn the graph and velocity signals into verdicts the model misses on trusted, authenticated traffic.',
     points: [
@@ -850,7 +862,7 @@ function FooterB() {
         </div>
         <div className="mt-20 pt-8 border-t border-stone-800 flex items-center justify-between gap-6 flex-wrap">
           <div className="font-mono text-[11.5px] text-stone-600">© 2026 Ojuri Contributors. MIT licensed.</div>
-          <div className="font-mono text-[11.5px] text-stone-600">v1.3.0 · released July 7 2026</div>
+          <div className="font-mono text-[11.5px] text-stone-600">v1.4.0 · released August 9 2026</div>
         </div>
       </Shell>
     </footer>

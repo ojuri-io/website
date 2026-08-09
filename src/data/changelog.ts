@@ -73,6 +73,21 @@ export const RELEASES: Release[] = [
     ],
     metric:
       'The behavioral rules lift velocity-anomaly recall from 0 to 0.80 in the validation harness — with zero added false positives on agent-network, payroll, airtime, and remittance traffic.',
+  },
+  {
+    version: 'v1.4.0',
+    date: 'August 9, 2026',
+    title: 'Audited to the line',
+    summary:
+      'A line-by-line architecture review — 45 findings across three rounds, each re-verified against a live stack — drove this release, alongside an opt-in log-first audit pipeline that makes every decision durable in Kafka before the caller sees it.',
+    highlights: [
+      'Log-first audit pipeline (opt-in): decision events acknowledged by Kafka before the response, audit table materialised from the log',
+      'Infrastructure failure routes to human review, not customer declines — the inference breaker fallback is REVIEW',
+      'Role and permission changes apply to live sessions — deactivating a user actually cuts them off',
+      'Score calibration reaches serving, PAA takes a leader lease, and the RDA replica count is configurable',
+    ],
+    metric:
+      'Re-verified post-fix: 2,000-request load test, all HTTP 200, p99 84.5 ms at 16-way concurrency — down from the 295 ms pre-fix baseline.',
     current: true,
   },
   {
