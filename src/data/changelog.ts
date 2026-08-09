@@ -77,17 +77,17 @@ export const RELEASES: Release[] = [
   {
     version: 'v1.4.0',
     date: 'August 9, 2026',
-    title: 'Audited to the line',
+    title: 'Every line reviewed',
     summary:
-      'A line-by-line architecture review — 45 findings across three rounds, each re-verified against a live stack — drove this release, alongside an opt-in log-first audit pipeline that makes every decision durable in Kafka before the caller sees it.',
+      'We reviewed the entire platform line by line and fixed all 45 issues we found, verifying each fix on a running system. The release also adds an optional stronger audit mode: every decision is permanently recorded before the customer gets an answer, so no record is ever lost — even if a server crashes mid-request.',
     highlights: [
-      'Log-first audit pipeline (opt-in): decision events acknowledged by Kafka before the response, audit table materialised from the log',
-      'Infrastructure failure routes to human review, not customer declines — the inference breaker fallback is REVIEW',
-      'Role and permission changes apply to live sessions — deactivating a user actually cuts them off',
-      'Score calibration reaches serving, PAA takes a leader lease, and the RDA replica count is configurable',
+      'If the scoring engine fails, transactions go to human review instead of being declined — a customer is never rejected because of an internal outage',
+      'Removing someone’s access or changing their role now takes effect immediately, not at their next login',
+      'Choose how many detection servers to run with a single setting — no config surgery to scale up',
+      'More trustworthy scores and safer operations: calibrated probabilities now reach serving, and the graph service protects itself from being run twice by mistake',
     ],
     metric:
-      'Re-verified post-fix: 2,000-request load test, all HTTP 200, p99 84.5 ms at 16-way concurrency — down from the 295 ms pre-fix baseline.',
+      'Verified under load after the fixes: 2,000 requests, every single one succeeded, and 99 out of 100 answered within 85 ms — down from 295 ms before.',
     current: true,
   },
   {
