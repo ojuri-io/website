@@ -35,7 +35,7 @@ function Rail({ active }: { active: string }) {
           <Github size={14} {...ICON} className="transition-transform duration-300 group-hover:rotate-[-8deg]" /> GitHub
         </a>
         <a href="https://github.com/ojuri-io/ojuri#readme" className="text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">Docs</a>
-        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.5.0</div>
+        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.5.1</div>
       </div>
     </aside>
   );
@@ -590,7 +590,19 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    tag: 'v1.5.0', date: 'August 11, 2026', state: 'current',
+    tag: 'v1.5.1', date: 'August 11, 2026', state: 'current',
+    head: 'Fixes found by running it',
+    body: 'Standing the public sandbox up exercised paths that unit tests do not, and turned up five faults — two of which made a feature look like it worked while doing nothing at all. All are fixed and verified against the running environment.',
+    points: [
+      'API keys are saved. The dashboard showed you a key and quietly discarded it, so every request made with one was rejected',
+      'The API stays reachable after a restart — the proxy kept sending requests to an address the detection agent no longer had',
+      'A server that is merely unreachable no longer reports itself as misconfigured, which sent operators to change a setting that was already correct',
+      'A self-stopping deployment now really does stop itself; the timers were being skipped whenever the stack failed to start',
+    ],
+    note: 'Verified end to end on the live sandbox: sign in, issue a key, score a transaction, and read the decision back with its rule and audit trail.',
+  },
+  {
+    tag: 'v1.5.0', date: 'August 11, 2026',
     head: 'Run it without installing it',
     body: 'A one-command deployment that puts a complete Ojuri on a single cloud machine, behind HTTPS, and stops itself when nobody is using it. Standing it up surfaced three faults that made services unrunnable rather than merely awkward — each is fixed, and each was verified on the running system rather than in a test.',
     points: [
@@ -897,7 +909,7 @@ function FooterB() {
         </div>
         <div className="mt-20 pt-8 border-t border-stone-800 flex items-center justify-between gap-6 flex-wrap">
           <div className="font-mono text-[11.5px] text-stone-600">© 2026 Ojuri Contributors. MIT licensed.</div>
-          <div className="font-mono text-[11.5px] text-stone-600">v1.5.0 · released August 11 2026</div>
+          <div className="font-mono text-[11.5px] text-stone-600">v1.5.1 · released August 11 2026</div>
         </div>
       </Shell>
     </footer>

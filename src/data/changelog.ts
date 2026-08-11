@@ -103,6 +103,21 @@ export const RELEASES: Release[] = [
     ],
     metric:
       'Follow-up answers went from 248 seconds and four invented questions to 67 seconds and a straight answer — the model had been generating text nobody would read.',
+  },
+  {
+    version: 'v1.5.1',
+    date: 'August 11, 2026',
+    title: 'Fixes found by running it',
+    summary:
+      'Standing the public sandbox up exercised paths that unit tests do not, and turned up five faults — two of which made a feature look like it worked while doing nothing at all. All are fixed and verified against the running environment.',
+    highlights: [
+      'API keys are saved. The dashboard showed you a key and quietly discarded it, so every request made with one was rejected',
+      'The API stays reachable after a restart — the proxy kept sending requests to an address the detection agent no longer had',
+      'A server that is merely unreachable no longer reports itself as misconfigured, which sent operators to change a setting that was already correct',
+      'A self-stopping deployment now really does stop itself; the timers were being skipped whenever the stack failed to start',
+    ],
+    metric:
+      'Verified end to end on the live sandbox: sign in, issue a key, score a transaction, and read the decision back with its rule and audit trail.',
     current: true,
   },
   {
