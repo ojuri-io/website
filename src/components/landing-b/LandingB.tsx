@@ -302,6 +302,14 @@ function SentinelSection() {
           stream, the model registry, and the override that teaches the system
           what it got wrong. Shipped in the box, same licence.
         </p>
+        <p className="mt-5 text-[15px] leading-[25px] text-stone-600 max-w-measure">
+          There is a live one at{' '}
+          <a href="https://sandbox.ojuri.io" target="_blank" rel="noopener noreferrer" className="text-stone-900 underline decoration-stone-400 underline-offset-4 hover:decoration-stone-700 transition-colors">sandbox.ojuri.io</a>{' '}
+          — sign in as <span className="font-mono text-[13px] text-stone-900">demo</span> /{' '}
+          <span className="font-mono text-[13px] text-stone-900">try-ojuri</span> and look around, or{' '}
+          <a href="#sandbox" className="text-stone-900 underline decoration-stone-400 underline-offset-4 hover:decoration-stone-700 transition-colors">send it a transaction</a>{' '}
+          and watch the verdict arrive.
+        </p>
         <figure className="m-0 mt-14">
           <div className="border border-stone-300 rounded-lg overflow-hidden">
             <img
@@ -314,9 +322,10 @@ function SentinelSection() {
             />
           </div>
           <figcaption className="mt-5 text-[13.5px] leading-[22px] text-stone-600 max-w-measure">
-            Dashboard home — open source, MIT-licensed. Sentinel is a frontend, so
-            it runs separately via <span className="font-mono text-[12.5px] text-stone-900">npm run dev</span> against
-            the agents you booted in <span className="font-mono text-[12.5px] text-stone-900">docker compose</span>.
+            Dashboard home — open source, MIT-licensed. Ships in the compose stack
+            from v1.5.0: bring it up with <span className="font-mono text-[12.5px] text-stone-900">docker compose --profile sentinel up</span>,
+            or run it from source with <span className="font-mono text-[12.5px] text-stone-900">npm run dev</span> against
+            agents you already have running.
           </figcaption>
         </figure>
       </Shell>
@@ -513,8 +522,8 @@ function CodeSection() {
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 pt-8 border-t border-stone-800">
           <p className="text-[13px] leading-[21px] text-stone-500 max-w-measure">
-            <span className="font-mono text-[12.5px] text-stone-200">Sentinel</span> is a frontend, not a service — it isn’t in the compose file.
-            Run it with <span className="font-mono text-[12.5px] text-stone-200">npm run dev</span> against the agents you just booted.
+            <span className="font-mono text-[12.5px] text-stone-200">Sentinel</span> is opt-in via <span className="font-mono text-[12.5px] text-stone-200">docker compose --profile sentinel</span> —
+            a plain <span className="font-mono text-[12.5px] text-stone-200">up</span> leaves it out, so the agents boot without waiting on a dashboard you may not want.
           </p>
           <p className="text-[13px] leading-[21px] text-stone-500 max-w-measure">
             <span className="font-mono text-[12.5px] text-stone-200">FIA</span> is opt-in via <span className="font-mono text-[12.5px] text-stone-200">docker compose --profile fia</span> —
