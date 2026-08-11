@@ -220,3 +220,24 @@ body.is-loaded .fade-up.d4 { transition-delay: 480ms; }
   .pulse-dot   { animation: none; opacity: 1; }
   .stream-row:last-child { animation: none; }
 }
+
+/* Changelog viewport. A default scrollbar on the ink surface reads as chrome
+   from another application; this keeps the affordance without the intrusion. */
+.changelog-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #3F3A33 transparent;
+  overscroll-behavior: contain;
+}
+.changelog-scroll::-webkit-scrollbar { width: 6px; }
+.changelog-scroll::-webkit-scrollbar-track { background: transparent; }
+.changelog-scroll::-webkit-scrollbar-thumb {
+  background: #3F3A33;
+  border-radius: 9999px;
+}
+.changelog-scroll::-webkit-scrollbar-thumb:hover { background: #5C564C; }
+
+/* A long inner scroller is a trap on a phone: the page stops moving while the
+   thumb is inside it. Below sm the list simply flows. */
+@media (max-width: 639px) {
+  .changelog-scroll { max-height: none; overflow-y: visible; }
+}

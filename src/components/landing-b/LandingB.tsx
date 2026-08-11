@@ -674,7 +674,17 @@ function Changelog() {
           release tagged and reproducible.
         </p>
 
-        <ol className="mt-16 relative border-l border-stone-800 ml-[5px]">
+        {/* Scroll container sits outside the list: the timeline dots are
+            translated half-way over the rule, and overflow-y clips the x-axis
+            too, so they need padding inside the scrollable box to survive. */}
+        <div className="relative mt-16">
+          <div
+            className="changelog-scroll max-h-[32rem] overflow-y-auto pl-[9px] -ml-[9px] pr-5"
+            tabIndex={0}
+            role="region"
+            aria-label="Release history"
+          >
+            <ol className="relative border-l border-stone-800 ml-[5px]">
           {RELEASES.map((r) => (
             <li key={r.tag} className="relative pl-8 sm:pl-10 pb-14 last:pb-0">
               <span
@@ -702,8 +712,11 @@ function Changelog() {
                 <p className="mt-5 max-w-measure border-l border-[#C4694F] pl-4 text-[14px] leading-[23px] text-stone-400">{r.note}</p>
               )}
             </li>
-          ))}
-        </ol>
+              ))}
+            </ol>
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-stone-900 via-stone-900/80 to-transparent" />
+        </div>
 
         <a href="https://github.com/ojuri-io/ojuri/releases" className="group mt-14 inline-flex items-center gap-2 font-mono text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">
           Full changelog on GitHub <ArrowRight size={14} {...ICON} className="transition-transform duration-300 group-hover:translate-x-1" />
