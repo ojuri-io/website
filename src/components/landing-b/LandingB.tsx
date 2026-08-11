@@ -4,6 +4,7 @@ import { Wordmark } from '../ui/Wordmark';
 import { EMAIL_RE, submitEmailSignup } from '../../utils/emailSignup';
 import { ArchitectureSection } from './ArchitectureSection';
 import { SandboxSection } from './SandboxSection';
+import { CURRENT_RELEASE, CURRENT_VERSION, CURRENT_VERSION_SHORT } from '../../data/changelog';
 import { Marker, SECTIONS, Shell } from './primitives';
 
 // Ojuri landing — Direction B: an ink-first operations console. Fixed section
@@ -35,7 +36,7 @@ function Rail({ active }: { active: string }) {
           <Github size={14} {...ICON} className="transition-transform duration-300 group-hover:rotate-[-8deg]" /> GitHub
         </a>
         <a href="https://github.com/ojuri-io/ojuri#readme" className="text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">Docs</a>
-        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.5.1</div>
+        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · {CURRENT_VERSION}</div>
       </div>
     </aside>
   );
@@ -129,7 +130,7 @@ function Hero() {
       <Shell className="pt-20 pb-20 lg:pt-28 lg:pb-24">
         <div className="fade-up flex flex-wrap items-center gap-3 mb-9">
           <span className="inline-flex items-center shrink-0 whitespace-nowrap h-6 px-2.5 border border-stone-700 rounded-full font-mono text-[10.5px] uppercase tracking-label text-stone-400">Open source</span>
-          <span className="text-[11px] uppercase tracking-label font-medium text-stone-500">Fraud detection for fintech · MIT · v1.4</span>
+          <span className="text-[11px] uppercase tracking-label font-medium text-stone-500">Fraud detection for fintech · MIT · {CURRENT_VERSION_SHORT}</span>
         </div>
 
         <h1 className="fade-up d1 font-display font-semibold text-stone-50 max-w-[18ch] text-[clamp(40px,5.6vw,68px)] leading-[1.04] tracking-tightest">
@@ -909,7 +910,7 @@ function FooterB() {
         </div>
         <div className="mt-20 pt-8 border-t border-stone-800 flex items-center justify-between gap-6 flex-wrap">
           <div className="font-mono text-[11.5px] text-stone-600">© 2026 Ojuri Contributors. MIT licensed.</div>
-          <div className="font-mono text-[11.5px] text-stone-600">v1.5.1 · released August 11 2026</div>
+          <div className="font-mono text-[11.5px] text-stone-600">{CURRENT_VERSION} · released {CURRENT_RELEASE.date}</div>
         </div>
       </Shell>
     </footer>

@@ -134,3 +134,17 @@ export const RELEASES: Release[] = [
     upcoming: true,
   },
 ];
+
+/**
+ * The shipped version, taken from whichever release is marked current.
+ * Hardcoding it beside each mention meant a release could update two of three
+ * and leave the hero announcing an older one, which is exactly what happened
+ * with v1.4.
+ */
+export const CURRENT_RELEASE =
+  RELEASES.find((r) => r.current) ?? RELEASES[RELEASES.length - 1];
+
+export const CURRENT_VERSION = CURRENT_RELEASE.version;
+
+/** Marketing shorthand: v1.5.1 -> v1.5 */
+export const CURRENT_VERSION_SHORT = CURRENT_VERSION.split('.').slice(0, 2).join('.');
