@@ -581,7 +581,19 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    tag: 'v1.4.0', date: 'August 9, 2026', state: 'current',
+    tag: 'v1.5.0', date: 'August 11, 2026', state: 'current',
+    head: 'Run it without installing it',
+    body: 'A one-command deployment that puts a complete Ojuri on a single cloud machine, behind HTTPS, and stops itself when nobody is using it. Standing it up surfaced three faults that made services unrunnable rather than merely awkward — each is fixed, and each was verified on the running system rather than in a test.',
+    points: [
+      'A public sandbox you can sign into and POST to, which sleeps when idle and wakes from a button on the page',
+      'The operator dashboard can finally be served from the shipped stack — it had a published image but nothing wired to run it',
+      'Production mode starts: the detection agent refused to boot because a required setting never reached it',
+      'The learning agent runs on current servers again, and investigation follow-ups answer the question asked instead of inventing their own',
+    ],
+    note: 'Follow-up answers went from 248 seconds and four invented questions to 67 seconds and a straight answer — the model had been generating text nobody would read.',
+  },
+  {
+    tag: 'v1.4.0', date: 'August 9, 2026',
     head: 'Every line reviewed',
     body: 'We reviewed the entire platform line by line and fixed all 45 issues we found, verifying each fix on a running system. The release also adds an optional stronger audit mode: every decision is permanently recorded before the customer gets an answer, so no record is ever lost — even if a server crashes mid-request.',
     points: [
@@ -863,7 +875,7 @@ function FooterB() {
         </div>
         <div className="mt-20 pt-8 border-t border-stone-800 flex items-center justify-between gap-6 flex-wrap">
           <div className="font-mono text-[11.5px] text-stone-600">© 2026 Ojuri Contributors. MIT licensed.</div>
-          <div className="font-mono text-[11.5px] text-stone-600">v1.4.0 · released August 9 2026</div>
+          <div className="font-mono text-[11.5px] text-stone-600">v1.5.0 · released August 11 2026</div>
         </div>
       </Shell>
     </footer>

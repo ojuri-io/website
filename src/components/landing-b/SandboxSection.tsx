@@ -170,7 +170,7 @@ export function SandboxSection() {
   async function send() {
     const key = apiKey.trim();
     if (!key) {
-      setResult({ kind: 'error', message: 'Paste an API key first — issue one from Sentinel → Integrations.' });
+      setResult({ kind: 'error', message: 'Paste an API key first — sign in as demo / try-ojuri and issue one from Integrations.' });
       return;
     }
     setResult({ kind: 'sending' });
@@ -218,7 +218,7 @@ export function SandboxSection() {
         </h2>
         <p className="mt-6 text-[16.5px] leading-[27px] text-stone-400 max-w-measure">
           A full stack — RDA, PAA, MLA, FIA, Sentinel — on one instance at{' '}
-          <a href={SANDBOX_URL} className="text-stone-100 underline decoration-stone-600 underline-offset-4 hover:decoration-stone-300 transition-colors">sandbox.ojuri.io</a>.
+          <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="text-stone-100 underline decoration-stone-600 underline-offset-4 hover:decoration-stone-300 transition-colors">sandbox.ojuri.io</a>.
           It stops itself when nobody is using it, so the first visit in a while
           shows a wake button and takes about three minutes to come up. Data is
           wiped freely and nothing there is production.
@@ -227,6 +227,8 @@ export function SandboxSection() {
         <div className="mt-8">
           <a
             href={SANDBOX_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 h-11 px-5 rounded-md bg-stone-100 text-stone-900 text-[14px] font-medium no-underline hover:bg-white transition-colors"
           >
             Open the sandbox
@@ -252,11 +254,14 @@ export function SandboxSection() {
         <div className="mt-16 pt-12 border-t border-stone-800">
           <div className="font-mono text-[11px] uppercase tracking-label text-stone-600">Now run it yourself</div>
           <p className="mt-2.5 text-[13.5px] leading-[22px] text-stone-500 max-w-measure">
-            Sign in at <a href={SANDBOX_URL} className="text-stone-300 underline decoration-stone-700 underline-offset-4">sandbox.ojuri.io</a>,
-            open <span className="font-mono text-[12.5px] text-stone-300">Integrations</span> and issue yourself an API key.
-            Keys are rate-limited and revocable, and the one you create is yours alone.
-            Send a transaction below, then find the same{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">audit_id</span> in Sentinel under Live Decisions.
+            Sign in at <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="text-stone-300 underline decoration-stone-700 underline-offset-4">sandbox.ojuri.io</a>{' '}
+            with <span className="font-mono text-[12.5px] text-stone-300">demo</span> /{' '}
+            <span className="font-mono text-[12.5px] text-stone-300">try-ojuri</span> — a shared, read-only account that
+            cannot change rules, thresholds or anyone else's view. Open{' '}
+            <span className="font-mono text-[12.5px] text-stone-300">Integrations</span>, issue yourself an API key, and
+            send a transaction below. The same{' '}
+            <span className="font-mono text-[12.5px] text-stone-300">audit_id</span> appears in Sentinel under Live
+            Decisions moments later.
           </p>
 
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-x-12 gap-y-8">
@@ -329,7 +334,7 @@ export function SandboxSection() {
                   <p className="mt-2 text-[13.5px] leading-[22px] text-stone-500">
                     It stops itself when idle. Open it, press the wake button, give it about three minutes, then send again.
                   </p>
-                  <a href={SANDBOX_URL} className="mt-4 inline-flex items-center gap-2 text-[13.5px] text-stone-200 underline decoration-stone-600 underline-offset-4">
+                  <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-[13.5px] text-stone-200 underline decoration-stone-600 underline-offset-4">
                     Wake the sandbox <ArrowRight size={14} {...ICON} />
                   </a>
                 </div>
