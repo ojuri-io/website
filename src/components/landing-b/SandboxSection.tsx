@@ -90,39 +90,17 @@ const SCENARIOS: Scenario[] = [
 ];
 
 const RECORDED_REQUEST = `$ curl -X POST https://sandbox.ojuri.io/v1/predict \\
-    -H 'Content-Type: application/json' \\
     -H 'X-Api-Key: fdk_9f2c_…' \\
-    -d '{
-      "transaction_id":   "550e8400-e29b-41d4-a716-446655440000",
-      "sender_id":        "user_a",
-      "receiver_id":      "user_b",
-      "amount":           2750000,
-      "transaction_type": "TRANSFER",
-      "timestamp":        1754870400000,
-      "device_is_trusted": false,
-      "ip_is_vpn":         true,
-      "ip_country":        "RU",
-      "destination_country": "AE",
-      "session_to_txn_seconds": 4
-    }'`;
+    -d '{ …, "amount": 2750000, "transaction_type": "TRANSFER",
+          "ip_is_vpn": true, "ip_country": "RU", "destination_country": "AE" }'`;
 
 const RECORDED_RESPONSE = `{
-  "transaction_id":    "550e8400-…",
-  "fraud":             true,
+  "decision":        "DECLINE",
+  "decision_source": "PRE_RULE",
+  "rule_hit":        "FATF_HIGH_RISK_CORRIDOR",
   "fraud_probability": 0.8412,
-  "decision":          "DECLINE",
-  "decision_source":   "PRE_RULE",
-  "rule_hit":          "FATF_HIGH_RISK_CORRIDOR",
-  "reason_codes": [
-    { "code": "IP_VPN",          "description": "Request arrived over a VPN or proxy",            "contribution":  0.31, "value": 1 },
-    { "code": "DEVICE_UNTRUSTED","description": "Device not previously seen for this sender",     "contribution":  0.24, "value": 1 },
-    { "code": "AMOUNT_ZSCORE",   "description": "Amount relative to the sender's own baseline",   "contribution":  0.19, "value": 6.2 }
-  ],
-  "model_version": "v1.0",
-  "threshold":     0.30,
-  "audit_id":      "38fb28d2-…",
-  "latency_ms":    7,
-  "timestamp":     1754870400123
+  "audit_id":        "38fb28d2-…",
+  "latency_ms":      7
 }`;
 
 function Block({ label, body, onCopy, copied }: { label: string; body: string; onCopy: () => void; copied: boolean }) {
@@ -217,11 +195,11 @@ export function SandboxSection() {
           A running Ojuri you can POST to.
         </h2>
         <p className="mt-6 text-[16.5px] leading-[27px] text-stone-400 max-w-measure">
-          A full stack — RDA, PAA, MLA, FIA, Sentinel — on one instance at{' '}
+          Every agent — detection, pattern analysis, learning, investigation —
+          and the operator dashboard, running together on one machine at{' '}
           <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="text-stone-100 underline decoration-stone-600 underline-offset-4 hover:decoration-stone-300 transition-colors">sandbox.ojuri.io</a>.
           It stops itself when nobody is using it, so the first visit in a while
-          shows a wake button and takes about three minutes to come up. Data is
-          wiped freely and nothing there is production.
+          shows a wake button and takes about three minutes to come up.
         </p>
 
         <div className="mt-8">
@@ -237,13 +215,14 @@ export function SandboxSection() {
         </div>
 
         <div className="mt-16">
-          <div className="font-mono text-[11px] uppercase tracking-label text-stone-600">What a call looks like</div>
+          <div className="font-mono text-[11px] uppercase tracking-label text-stone-600">When a rule decides instead</div>
           <p className="mt-2.5 text-[13.5px] leading-[22px] text-stone-500 max-w-measure">
-            A recorded exchange against the high-risk corridor scenario — no
-            account needed to read it. A PRE rule fired before the model ran,
-            which is why <span className="font-mono text-[12.5px] text-stone-300">decision_source</span> is{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">PRE_RULE</span> rather than{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">ML</span>.
+            Quickstart above shows the model scoring a transaction and accepting
+            it. Not every verdict works that way. Here a written rule matched
+            first and decided on its own — the model was never consulted, which is
+            what <span className="font-mono text-[12.5px] text-stone-300">decision_source: PRE_RULE</span>{' '}
+            records. Abridged; the full response carries the same reason codes and
+            lineage as the one above.
           </p>
           <div className="mt-6 grid grid-cols-1 gap-6">
             <Block label="Request" body={RECORDED_REQUEST} copied={copied === 'req'} onCopy={() => copy('req', RECORDED_REQUEST)} />
@@ -256,12 +235,18 @@ export function SandboxSection() {
           <p className="mt-2.5 text-[13.5px] leading-[22px] text-stone-500 max-w-measure">
             Sign in at <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="text-stone-300 underline decoration-stone-700 underline-offset-4">sandbox.ojuri.io</a>{' '}
             with <span className="font-mono text-[12.5px] text-stone-300">demo</span> /{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">try-ojuri</span> — a shared, read-only account that
-            cannot change rules, thresholds or anyone else's view. Open{' '}
+            <span className="font-mono text-[12.5px] text-stone-300">try-ojuri</span> — an account everyone shares. It can
+            read the dashboard and issue API keys, but cannot change rules, thresholds
+            or any decision, so nothing you do there affects the next visitor. Open{' '}
             <span className="font-mono text-[12.5px] text-stone-300">Integrations</span>, issue yourself an API key, and
             send a transaction below. The same{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">audit_id</span> appears in Sentinel under Live
-            Decisions moments later.
+            <span className="font-mono text-[12.5px] text-stone-300">audit_id</span> appears in the dashboard under Live
+            Decisions within a second or two.
+          </p>
+          <p className="mt-4 text-[13.5px] leading-[22px] text-stone-400 max-w-measure border-l-2 border-stone-700 pl-4">
+            Send made-up data only. The account is shared, so every transaction you
+            submit is visible in the audit log to anyone else signed in — and the
+            whole environment is wiped without warning.
           </p>
 
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-x-12 gap-y-8">
