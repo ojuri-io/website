@@ -3,6 +3,7 @@ import { ArrowDown, ArrowRight, Copy, Github } from 'lucide-react';
 import { Wordmark } from '../ui/Wordmark';
 import { EMAIL_RE, submitEmailSignup } from '../../utils/emailSignup';
 import { ArchitectureSection } from './ArchitectureSection';
+import { SandboxSection } from './SandboxSection';
 import { Marker, SECTIONS, Shell } from './primitives';
 
 // Ojuri landing — Direction B: an ink-first operations console. Fixed section
@@ -34,7 +35,7 @@ function Rail({ active }: { active: string }) {
           <Github size={14} {...ICON} className="transition-transform duration-300 group-hover:rotate-[-8deg]" /> GitHub
         </a>
         <a href="https://github.com/ojuri-io/ojuri#readme" className="text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">Docs</a>
-        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.4.0</div>
+        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.5.0</div>
       </div>
     </aside>
   );
@@ -540,7 +541,7 @@ function Differentiators() {
   return (
     <section id="why" className="scroll-mt-20 border-b border-stone-800">
       <Shell className="py-24">
-        <Marker n="08">Why this exists</Marker>
+        <Marker n="09">Why this exists</Marker>
         <h2 className="mt-7 font-display font-semibold text-stone-50 text-[clamp(28px,3.2vw,36px)] leading-[1.14] tracking-tightest max-w-[24ch]">
           The decisions you ship are auditable, not opaque.
         </h2>
@@ -643,7 +644,7 @@ function Changelog() {
   return (
     <section id="changelog" className="scroll-mt-20 border-b border-stone-800">
       <Shell className="py-24">
-        <Marker n="09">Changelog</Marker>
+        <Marker n="10">Changelog</Marker>
         <h2 className="mt-7 font-display font-semibold text-stone-50 text-[clamp(28px,3.2vw,36px)] leading-[1.14] tracking-tightest max-w-[18ch]">
           From launch to a closed learning loop.
         </h2>
@@ -919,6 +920,7 @@ export function LandingB() {
         <ArchitectureSection />
         <UnderTheHood />
         <CodeSection />
+        <SandboxSection />
         <Differentiators />
         <Changelog />
         <Disclosure />
