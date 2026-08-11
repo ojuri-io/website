@@ -3,6 +3,7 @@ import { ArrowDown, ArrowRight, Copy, Github } from 'lucide-react';
 import { Wordmark } from '../ui/Wordmark';
 import { EMAIL_RE, submitEmailSignup } from '../../utils/emailSignup';
 import { ArchitectureSection } from './ArchitectureSection';
+import { SandboxSection } from './SandboxSection';
 import { Marker, SECTIONS, Shell } from './primitives';
 
 // Ojuri landing — Direction B: an ink-first operations console. Fixed section
@@ -34,7 +35,7 @@ function Rail({ active }: { active: string }) {
           <Github size={14} {...ICON} className="transition-transform duration-300 group-hover:rotate-[-8deg]" /> GitHub
         </a>
         <a href="https://github.com/ojuri-io/ojuri#readme" className="text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">Docs</a>
-        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.4.0</div>
+        <div className="mt-2 font-mono text-[10.5px] text-stone-600">MIT · v1.5.0</div>
       </div>
     </aside>
   );
@@ -301,6 +302,14 @@ function SentinelSection() {
           stream, the model registry, and the override that teaches the system
           what it got wrong. Shipped in the box, same licence.
         </p>
+        <p className="mt-5 text-[15px] leading-[25px] text-stone-600 max-w-measure">
+          There is a live one at{' '}
+          <a href="https://sandbox.ojuri.io" target="_blank" rel="noopener noreferrer" className="text-stone-900 underline decoration-stone-400 underline-offset-4 hover:decoration-stone-700 transition-colors">sandbox.ojuri.io</a>{' '}
+          — sign in as <span className="font-mono text-[13px] text-stone-900">demo</span> /{' '}
+          <span className="font-mono text-[13px] text-stone-900">try-ojuri</span> and look around, or{' '}
+          <a href="#sandbox" className="text-stone-900 underline decoration-stone-400 underline-offset-4 hover:decoration-stone-700 transition-colors">send it a transaction</a>{' '}
+          and watch the verdict arrive.
+        </p>
         <figure className="m-0 mt-14">
           <div className="border border-stone-300 rounded-lg overflow-hidden">
             <img
@@ -313,9 +322,10 @@ function SentinelSection() {
             />
           </div>
           <figcaption className="mt-5 text-[13.5px] leading-[22px] text-stone-600 max-w-measure">
-            Dashboard home — open source, MIT-licensed. Sentinel is a frontend, so
-            it runs separately via <span className="font-mono text-[12.5px] text-stone-900">npm run dev</span> against
-            the agents you booted in <span className="font-mono text-[12.5px] text-stone-900">docker compose</span>.
+            Dashboard home — open source, MIT-licensed. Ships in the compose stack
+            from v1.5.0: bring it up with <span className="font-mono text-[12.5px] text-stone-900">docker compose --profile sentinel up</span>,
+            or run it from source with <span className="font-mono text-[12.5px] text-stone-900">npm run dev</span> against
+            agents you already have running.
           </figcaption>
         </figure>
       </Shell>
@@ -512,8 +522,8 @@ function CodeSection() {
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 pt-8 border-t border-stone-800">
           <p className="text-[13px] leading-[21px] text-stone-500 max-w-measure">
-            <span className="font-mono text-[12.5px] text-stone-200">Sentinel</span> is a frontend, not a service — it isn’t in the compose file.
-            Run it with <span className="font-mono text-[12.5px] text-stone-200">npm run dev</span> against the agents you just booted.
+            <span className="font-mono text-[12.5px] text-stone-200">Sentinel</span> is opt-in via <span className="font-mono text-[12.5px] text-stone-200">docker compose --profile sentinel</span> —
+            a plain <span className="font-mono text-[12.5px] text-stone-200">up</span> leaves it out, so the agents boot without waiting on a dashboard you may not want.
           </p>
           <p className="text-[13px] leading-[21px] text-stone-500 max-w-measure">
             <span className="font-mono text-[12.5px] text-stone-200">FIA</span> is opt-in via <span className="font-mono text-[12.5px] text-stone-200">docker compose --profile fia</span> —
@@ -540,7 +550,7 @@ function Differentiators() {
   return (
     <section id="why" className="scroll-mt-20 border-b border-stone-800">
       <Shell className="py-24">
-        <Marker n="08">Why this exists</Marker>
+        <Marker n="09">Why this exists</Marker>
         <h2 className="mt-7 font-display font-semibold text-stone-50 text-[clamp(28px,3.2vw,36px)] leading-[1.14] tracking-tightest max-w-[24ch]">
           The decisions you ship are auditable, not opaque.
         </h2>
@@ -580,7 +590,19 @@ const RELEASES: Release[] = [
     ],
   },
   {
-    tag: 'v1.4.0', date: 'August 9, 2026', state: 'current',
+    tag: 'v1.5.0', date: 'August 11, 2026', state: 'current',
+    head: 'Run it without installing it',
+    body: 'A one-command deployment that puts a complete Ojuri on a single cloud machine, behind HTTPS, and stops itself when nobody is using it. Standing it up surfaced three faults that made services unrunnable rather than merely awkward — each is fixed, and each was verified on the running system rather than in a test.',
+    points: [
+      'A public sandbox you can sign into and POST to, which sleeps when idle and wakes from a button on the page',
+      'The operator dashboard can finally be served from the shipped stack — it had a published image but nothing wired to run it',
+      'Production mode starts: the detection agent refused to boot because a required setting never reached it',
+      'The learning agent runs on current servers again, and investigation follow-ups answer the question asked instead of inventing their own',
+    ],
+    note: 'Follow-up answers went from 248 seconds and four invented questions to 67 seconds and a straight answer — the model had been generating text nobody would read.',
+  },
+  {
+    tag: 'v1.4.0', date: 'August 9, 2026',
     head: 'Every line reviewed',
     body: 'We reviewed the entire platform line by line and fixed all 45 issues we found, verifying each fix on a running system. The release also adds an optional stronger audit mode: every decision is permanently recorded before the customer gets an answer, so no record is ever lost — even if a server crashes mid-request.',
     points: [
@@ -643,7 +665,7 @@ function Changelog() {
   return (
     <section id="changelog" className="scroll-mt-20 border-b border-stone-800">
       <Shell className="py-24">
-        <Marker n="09">Changelog</Marker>
+        <Marker n="10">Changelog</Marker>
         <h2 className="mt-7 font-display font-semibold text-stone-50 text-[clamp(28px,3.2vw,36px)] leading-[1.14] tracking-tightest max-w-[18ch]">
           From launch to a closed learning loop.
         </h2>
@@ -652,7 +674,17 @@ function Changelog() {
           release tagged and reproducible.
         </p>
 
-        <ol className="mt-16 relative border-l border-stone-800 ml-[5px]">
+        {/* Scroll container sits outside the list: the timeline dots are
+            translated half-way over the rule, and overflow-y clips the x-axis
+            too, so they need padding inside the scrollable box to survive. */}
+        <div className="relative mt-16">
+          <div
+            className="changelog-scroll max-h-[32rem] overflow-y-auto pl-[9px] -ml-[9px] pr-5"
+            tabIndex={0}
+            role="region"
+            aria-label="Release history"
+          >
+            <ol className="relative border-l border-stone-800 ml-[5px]">
           {RELEASES.map((r) => (
             <li key={r.tag} className="relative pl-8 sm:pl-10 pb-14 last:pb-0">
               <span
@@ -680,8 +712,11 @@ function Changelog() {
                 <p className="mt-5 max-w-measure border-l border-[#C4694F] pl-4 text-[14px] leading-[23px] text-stone-400">{r.note}</p>
               )}
             </li>
-          ))}
-        </ol>
+              ))}
+            </ol>
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-stone-900 via-stone-900/80 to-transparent" />
+        </div>
 
         <a href="https://github.com/ojuri-io/ojuri/releases" className="group mt-14 inline-flex items-center gap-2 font-mono text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">
           Full changelog on GitHub <ArrowRight size={14} {...ICON} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -862,7 +897,7 @@ function FooterB() {
         </div>
         <div className="mt-20 pt-8 border-t border-stone-800 flex items-center justify-between gap-6 flex-wrap">
           <div className="font-mono text-[11.5px] text-stone-600">© 2026 Ojuri Contributors. MIT licensed.</div>
-          <div className="font-mono text-[11.5px] text-stone-600">v1.4.0 · released August 9 2026</div>
+          <div className="font-mono text-[11.5px] text-stone-600">v1.5.0 · released August 11 2026</div>
         </div>
       </Shell>
     </footer>
@@ -919,6 +954,7 @@ export function LandingB() {
         <ArchitectureSection />
         <UnderTheHood />
         <CodeSection />
+        <SandboxSection />
         <Differentiators />
         <Changelog />
         <Disclosure />

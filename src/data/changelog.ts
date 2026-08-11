@@ -88,6 +88,21 @@ export const RELEASES: Release[] = [
     ],
     metric:
       'Verified under load after the fixes: 2,000 requests, every single one succeeded, and 99 out of 100 answered within 85 ms — down from 295 ms before.',
+  },
+  {
+    version: 'v1.5.0',
+    date: 'August 11, 2026',
+    title: 'Run it without installing it',
+    summary:
+      'A one-command deployment that puts a complete Ojuri on a single cloud machine, behind HTTPS, and stops itself when nobody is using it. Standing it up surfaced three faults that made services unrunnable rather than merely awkward — each is fixed, and each was verified on the running system rather than in a test.',
+    highlights: [
+      'A public sandbox you can sign into and POST to, which sleeps when idle and wakes from a button on the page',
+      'The operator dashboard can finally be served from the shipped stack — it had a published image but nothing wired to run it',
+      'Production mode starts: the detection agent refused to boot because a required setting never reached it',
+      'The learning agent runs on current servers again, and investigation follow-ups answer the question asked instead of inventing their own',
+    ],
+    metric:
+      'Follow-up answers went from 248 seconds and four invented questions to 67 seconds and a straight answer — the model had been generating text nobody would read.',
     current: true,
   },
   {

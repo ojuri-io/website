@@ -9,8 +9,9 @@ export const SECTIONS: Array<[string, string, string]> = [
   ['05', 'Architecture', 'architecture'],
   ['06', 'Under the hood', 'under-the-hood'],
   ['07', 'Quickstart', 'quickstart'],
-  ['08', 'Why', 'why'],
-  ['09', 'Changelog', 'changelog'],
+  ['08', 'Try it live', 'sandbox'],
+  ['09', 'Why', 'why'],
+  ['10', 'Changelog', 'changelog'],
 ];
 
 export function Shell({ children, className }: { children: ReactNode; className?: string }) {
