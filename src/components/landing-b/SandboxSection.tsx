@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ArrowRight, Copy } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
+import { ArrowRight, Copy, Eye, EyeOff } from 'lucide-react';
 import { Marker, Shell } from './primitives';
 
 const ICON = { strokeWidth: 1.5 } as const;
@@ -103,6 +103,39 @@ const RECORDED_RESPONSE = `{
   "latency_ms":      7
 }`;
 
+function draft(scenario: Scenario) {
+  return JSON.stringify(
+    {
+      sender_id: 'demo_sender',
+      receiver_id: 'demo_receiver',
+      amount: scenario.amount,
+      ...scenario.body,
+    },
+    null,
+    2,
+  );
+}
+
+function Editor({ value, onChange, onCopy, copied }: { value: string; onChange: (v: string) => void; onCopy: () => void; copied: boolean }) {
+  return (
+    <div className="rounded-md border border-stone-800 overflow-hidden">
+      <div className="flex items-center justify-between bg-[#15120F] border-b border-stone-800 px-4 h-10">
+        <span className="font-mono text-[11px] tracking-[0.06em] uppercase text-stone-500">Request body · editable</span>
+        <button onClick={onCopy} className="group inline-flex items-center gap-1.5 h-7 px-2.5 font-mono text-[11px] text-stone-500 hover:text-stone-100 rounded-sm transition-colors">
+          <Copy size={14} {...ICON} className="transition-transform duration-300 group-hover:scale-110" /> {copied ? 'copied' : 'copy'}
+        </button>
+      </div>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        spellCheck={false}
+        aria-label="Request body"
+        className="block w-full h-[520px] bg-[#0F0D0B] text-stone-200 font-mono text-[13px] leading-[22px] p-6 resize-y focus:outline-none focus:bg-[#100E0C]"
+      />
+    </div>
+  );
+}
+
 function Block({ label, body, onCopy, copied }: { label: string; body: string; onCopy: () => void; copied: boolean }) {
   return (
     <div className="rounded-md border border-stone-800 overflow-hidden">
@@ -119,50 +152,87 @@ function Block({ label, body, onCopy, copied }: { label: string; body: string; o
   );
 }
 
+function Step({ n, children }: { n: string; children: ReactNode }) {
+  return (
+    <div className="flex gap-4">
+      <span className="font-mono text-[11px] text-stone-600 pt-[3px] tabular-nums">{n}</span>
+      <div className="text-[13.5px] leading-[22px] text-stone-500 max-w-measure">{children}</div>
+    </div>
+  );
+}
+
+type FieldError = { field: string; message: string };
+
 type Result =
   | { kind: 'idle' }
   | { kind: 'sending' }
   | { kind: 'ok'; body: string }
   | { kind: 'asleep' }
-  | { kind: 'error'; message: string };
+  | { kind: 'unreachable' }
+  | { kind: 'error'; message: string; fields?: FieldError[] };
+
+// RDA answers a rejected POST with { status, message, errors: [{ field, message }] }.
+// Rendering the raw text sliced to 200 chars threw the useful half away.
+function explain(status: number, text: string): { message: string; fields?: FieldError[] } {
+  try {
+    const parsed = JSON.parse(text);
+    const fields: FieldError[] | undefined = Array.isArray(parsed.errors) ? parsed.errors : undefined;
+    if (typeof parsed.message === 'string') return { message: `${status} — ${parsed.message}`, fields };
+  } catch {
+    /* not JSON — fall through to the raw body */
+  }
+  return { message: `${status} — ${text.slice(0, 200)}` };
+}
 
 export function SandboxSection() {
   const [apiKey, setApiKey] = useState('');
+  const [showKey, setShowKey] = useState(false);
   const [scenario, setScenario] = useState(SCENARIOS[2]);
-  const [amount, setAmount] = useState(String(SCENARIOS[2].amount));
+  const [body, setBody] = useState(() => draft(SCENARIOS[2]));
   const [result, setResult] = useState<Result>({ kind: 'idle' });
   const [copied, setCopied] = useState<string | null>(null);
 
-  function copy(id: string, body: string) {
-    void navigator.clipboard?.writeText(body);
+  function copy(id: string, value: string) {
+    void navigator.clipboard?.writeText(value);
     setCopied(id);
     setTimeout(() => setCopied(null), 1600);
   }
 
   function pick(s: Scenario) {
     setScenario(s);
-    setAmount(String(s.amount));
+    setBody(draft(s));
     setResult({ kind: 'idle' });
   }
 
   async function send() {
     const key = apiKey.trim();
     if (!key) {
-      setResult({ kind: 'error', message: 'Paste an API key first — sign in as demo / try-ojuri and issue one from Integrations.' });
+      setResult({ kind: 'error', message: 'Paste an API key first — step 2 above.' });
       return;
     }
+
+    let edited: unknown;
+    try {
+      edited = JSON.parse(body);
+    } catch (e) {
+      return setResult({ kind: 'error', message: `Request body is not valid JSON — ${(e as Error).message}` });
+    }
+    // JSON.parse happily returns arrays, strings and null, and spreading any of
+    // those produces a payload the server can only reject as gibberish.
+    if (edited === null || typeof edited !== 'object' || Array.isArray(edited)) {
+      return setResult({ kind: 'error', message: 'Request body must be a JSON object — one { … } with your fields inside.' });
+    }
+
     setResult({ kind: 'sending' });
 
     // A repeated transaction_id is treated as a replay and short-circuits to
     // 409 without running the model, so every send needs a fresh one or the
     // second click would measure the idempotency path instead of a decision.
+    // Spread last so an explicit transaction_id or timestamp still wins.
     const payload = {
       transaction_id: crypto.randomUUID(),
-      sender_id: 'demo_sender',
-      receiver_id: 'demo_receiver',
-      amount: Number(amount) || 0,
       timestamp: Date.now(),
-      ...scenario.body,
+      ...(edited as Record<string, unknown>),
     };
 
     try {
@@ -177,13 +247,14 @@ export function SandboxSection() {
       if (res.status === 429) return setResult({ kind: 'error', message: 'Rate limit reached for this key. Wait a minute and try again.' });
 
       const text = await res.text();
-      if (!res.ok) return setResult({ kind: 'error', message: `${res.status} — ${text.slice(0, 200)}` });
+      if (!res.ok) return setResult({ kind: 'error', ...explain(res.status, text) });
 
       setResult({ kind: 'ok', body: JSON.stringify(JSON.parse(text), null, 2) });
     } catch {
-      // A sleeping origin fails preflight before any status reaches us, so a
-      // network-level failure is far more often "asleep" than "broken".
-      setResult({ kind: 'asleep' });
+      // A sleeping origin fails preflight before any status reaches us, but so
+      // does a blocked request or a genuine outage. Only 503 above is proof of
+      // sleep; here we can offer it as the likely cause, not as fact.
+      setResult({ kind: 'unreachable' });
     }
   }
 
@@ -198,76 +269,77 @@ export function SandboxSection() {
           Every agent — detection, pattern analysis, learning, investigation —
           and the operator dashboard, running together on one machine at{' '}
           <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="text-stone-100 underline decoration-stone-600 underline-offset-4 hover:decoration-stone-300 transition-colors">sandbox.ojuri.io</a>.
-          It stops itself when nobody is using it, so the first visit in a while
-          shows a wake button and takes about three minutes to come up.
+          It sleeps when idle, so the first visit in a while shows a wake button
+          and takes about three minutes to come up.
         </p>
 
-        <div className="mt-8">
-          <a
-            href={SANDBOX_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 h-11 px-5 rounded-md bg-stone-100 text-stone-900 text-[14px] font-medium no-underline hover:bg-white transition-colors"
-          >
-            Open the sandbox
-            <ArrowRight size={15} {...ICON} className="transition-transform duration-300 group-hover:translate-x-0.5" />
-          </a>
-        </div>
+        <div className="mt-14">
+          <div className="font-mono text-[11px] uppercase tracking-label text-stone-600">Run it yourself</div>
 
-        <div className="mt-16">
-          <div className="font-mono text-[11px] uppercase tracking-label text-stone-600">When a rule decides instead</div>
-          <p className="mt-2.5 text-[13.5px] leading-[22px] text-stone-500 max-w-measure">
-            Quickstart above shows the model scoring a transaction and accepting
-            it. Not every verdict works that way. Here a written rule matched
-            first and decided on its own — the model was never consulted, which is
-            what <span className="font-mono text-[12.5px] text-stone-300">decision_source: PRE_RULE</span>{' '}
-            records. Abridged; the full response carries the same reason codes and
-            lineage as the one above.
-          </p>
-          <div className="mt-6 grid grid-cols-1 gap-6">
-            <Block label="Request" body={RECORDED_REQUEST} copied={copied === 'req'} onCopy={() => copy('req', RECORDED_REQUEST)} />
-            <Block label="Response · 200 OK" body={RECORDED_RESPONSE} copied={copied === 'res'} onCopy={() => copy('res', RECORDED_RESPONSE)} />
+          <div className="mt-6 flex flex-col gap-4">
+            <Step n="1">
+              Sign in with <span className="font-mono text-[12.5px] text-stone-300">demo</span> /{' '}
+              <span className="font-mono text-[12.5px] text-stone-300">try-ojuri</span> — an account everyone shares.
+            </Step>
+            <Step n="2">
+              Open <span className="font-mono text-[12.5px] text-stone-300">Integrations</span> →{' '}
+              <span className="font-mono text-[12.5px] text-stone-300">Issue new key</span>. The token is shown once.
+            </Step>
+            <Step n="3">
+              Paste it below and send. The same <span className="font-mono text-[12.5px] text-stone-300">audit_id</span>{' '}
+              appears in the dashboard under Live decisions within a second or two.
+            </Step>
           </div>
-        </div>
 
-        <div className="mt-16 pt-12 border-t border-stone-800">
-          <div className="font-mono text-[11px] uppercase tracking-label text-stone-600">Now run it yourself</div>
-          <p className="mt-2.5 text-[13.5px] leading-[22px] text-stone-500 max-w-measure">
-            Sign in at <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="text-stone-300 underline decoration-stone-700 underline-offset-4">sandbox.ojuri.io</a>{' '}
-            with <span className="font-mono text-[12.5px] text-stone-300">demo</span> /{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">try-ojuri</span> — an account everyone shares. It can
-            read the dashboard and issue API keys, but cannot change rules, thresholds
-            or any decision, so nothing you do there affects the next visitor. Open{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">Integrations</span>, issue yourself an API key, and
-            send a transaction below. The same{' '}
-            <span className="font-mono text-[12.5px] text-stone-300">audit_id</span> appears in the dashboard under Live
-            Decisions within a second or two.
-          </p>
-          <p className="mt-4 text-[13.5px] leading-[22px] text-stone-400 max-w-measure border-l-2 border-stone-700 pl-4">
+          <div className="mt-7">
+            <a
+              href={SANDBOX_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 h-11 px-5 rounded-md bg-stone-100 text-stone-900 text-[14px] font-medium no-underline hover:bg-white transition-colors"
+            >
+              Open the sandbox
+              <ArrowRight size={15} {...ICON} className="transition-transform duration-300 group-hover:translate-x-0.5" />
+            </a>
+          </div>
+
+          <p className="mt-8 text-[13.5px] leading-[22px] text-stone-400 max-w-measure border-l-2 border-stone-700 pl-4">
             Send made-up data only. The account is shared, so every transaction you
             submit is visible in the audit log to anyone else signed in — and the
             whole environment is wiped without warning.
           </p>
 
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-x-12 gap-y-8">
+          <div className="mt-10 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-x-12 gap-y-8">
             <div className="flex flex-col gap-6">
               <label className="flex flex-col gap-2">
                 <span className="font-mono text-[11px] uppercase tracking-label text-stone-600">API key</span>
-                <input
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="fdk_…"
-                  className="h-10 px-3 rounded-md bg-[#0F0D0B] border border-stone-800 text-stone-200 font-mono text-[13px] placeholder:text-stone-700 focus:outline-none focus:border-stone-600"
-                />
+                <div className="relative">
+                  <input
+                    type={showKey ? 'text' : 'password'}
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="fdk_…"
+                    className="w-full h-10 pl-3 pr-10 rounded-md bg-[#0F0D0B] border border-stone-800 text-stone-200 font-mono text-[13px] placeholder:text-stone-700 focus:outline-none focus:border-stone-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowKey((v) => !v)}
+                    aria-label={showKey ? 'Hide API key' : 'Show API key'}
+                    className="absolute right-0 inset-y-0 w-10 inline-flex items-center justify-center text-stone-600 hover:text-stone-300 transition-colors"
+                  >
+                    {showKey ? <EyeOff size={15} {...ICON} /> : <Eye size={15} {...ICON} />}
+                  </button>
+                </div>
               </label>
 
               <div className="flex flex-col gap-2">
-                <span className="font-mono text-[11px] uppercase tracking-label text-stone-600">Scenario</span>
-                <div className="flex flex-col gap-1.5">
+                <span id="scenario-label" className="font-mono text-[11px] uppercase tracking-label text-stone-600">Scenario</span>
+                <div role="radiogroup" aria-labelledby="scenario-label" className="flex flex-col gap-1.5">
                   {SCENARIOS.map((s) => (
                     <button
                       key={s.key}
+                      role="radio"
+                      aria-checked={scenario.key === s.key}
                       onClick={() => pick(s)}
                       className={`text-left px-3 py-2.5 rounded-md border text-[13.5px] transition-colors ${
                         scenario.key === s.key
@@ -280,17 +352,11 @@ export function SandboxSection() {
                   ))}
                 </div>
                 <p className="mt-1 text-[12.5px] leading-[20px] text-stone-600">{scenario.note}</p>
+                <p className="mt-1 text-[12.5px] leading-[20px] text-stone-600">
+                  A preset loads into the editor. Change any field there, or add your own —
+                  what you see is what gets posted.
+                </p>
               </div>
-
-              <label className="flex flex-col gap-2">
-                <span className="font-mono text-[11px] uppercase tracking-label text-stone-600">Amount (NGN)</span>
-                <input
-                  inputMode="numeric"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))}
-                  className="h-10 px-3 rounded-md bg-[#0F0D0B] border border-stone-800 text-stone-200 font-mono text-[13px] focus:outline-none focus:border-stone-600"
-                />
-              </label>
 
               <button
                 onClick={send}
@@ -301,7 +367,14 @@ export function SandboxSection() {
               </button>
             </div>
 
-            <div className="min-w-0">
+            <div className="min-w-0 flex flex-col gap-6">
+              <Editor value={body} onChange={setBody} copied={copied === 'req-live'} onCopy={() => copy('req-live', body)} />
+              <p className="-mt-3 text-[12.5px] leading-[20px] text-stone-600">
+                <span className="font-mono text-[12px] text-stone-500">transaction_id</span> and{' '}
+                <span className="font-mono text-[12px] text-stone-500">timestamp</span> are generated at send unless you
+                set them yourself.
+              </p>
+
               {result.kind === 'idle' && (
                 <div className="rounded-md border border-dashed border-stone-800 p-8 text-[13.5px] leading-[22px] text-stone-600">
                   The decision will appear here, with the reason codes that drove it.
@@ -313,21 +386,52 @@ export function SandboxSection() {
               {result.kind === 'ok' && (
                 <Block label="Response · 200 OK" body={result.body} copied={copied === 'live'} onCopy={() => copy('live', result.body)} />
               )}
-              {result.kind === 'asleep' && (
+              {(result.kind === 'asleep' || result.kind === 'unreachable') && (
                 <div className="rounded-md border border-stone-800 p-8">
-                  <div className="text-[14px] text-stone-200">The sandbox is asleep.</div>
+                  <div className="text-[14px] text-stone-200">
+                    {result.kind === 'asleep' ? 'The sandbox is asleep.' : 'Could not reach the sandbox.'}
+                  </div>
                   <p className="mt-2 text-[13.5px] leading-[22px] text-stone-500">
-                    It stops itself when idle. Open it, press the wake button, give it about three minutes, then send again.
+                    {result.kind === 'asleep'
+                      ? 'It stops itself when idle. Open it, press the wake button, give it about three minutes, then send again.'
+                      : 'It may be asleep — open it and look for the wake button. If it is already up, something between you and it is blocking the request.'}
                   </p>
                   <a href={SANDBOX_URL} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-[13.5px] text-stone-200 underline decoration-stone-600 underline-offset-4">
-                    Wake the sandbox <ArrowRight size={14} {...ICON} />
+                    Open the sandbox <ArrowRight size={14} {...ICON} />
                   </a>
                 </div>
               )}
               {result.kind === 'error' && (
-                <div className="rounded-md border border-stone-800 p-8 text-[13.5px] leading-[22px] text-stone-400">{result.message}</div>
+                <div className="rounded-md border border-stone-800 p-8">
+                  <div className="text-[13.5px] leading-[22px] text-stone-300">{result.message}</div>
+                  {result.fields && (
+                    <dl className="mt-4 flex flex-col gap-1.5 font-mono text-[12.5px] leading-[20px]">
+                      {result.fields.map((f) => (
+                        <div key={f.field} className="flex gap-3">
+                          <dt className="text-stone-500 shrink-0">{f.field}</dt>
+                          <dd className="text-stone-400 m-0">{f.message}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
+                </div>
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="mt-16 pt-12 border-t border-stone-800">
+          <div className="font-mono text-[11px] uppercase tracking-label text-stone-600">When a rule decides instead</div>
+          <p className="mt-2.5 text-[13.5px] leading-[22px] text-stone-500 max-w-measure">
+            Every decision above came from the model. Not every verdict does. Here a
+            written rule matched first and decided on its own — the model was never
+            consulted, which is what{' '}
+            <span className="font-mono text-[12.5px] text-stone-300">decision_source: PRE_RULE</span> records.
+            Abridged; the full response carries the same reason codes and lineage.
+          </p>
+          <div className="mt-6 grid grid-cols-1 gap-6">
+            <Block label="Request" body={RECORDED_REQUEST} copied={copied === 'req'} onCopy={() => copy('req', RECORDED_REQUEST)} />
+            <Block label="Response · 200 OK" body={RECORDED_RESPONSE} copied={copied === 'res'} onCopy={() => copy('res', RECORDED_RESPONSE)} />
           </div>
         </div>
       </Shell>
