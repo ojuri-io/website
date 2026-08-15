@@ -936,6 +936,19 @@ export function LandingB() {
     };
   }, []);
 
+  // Browsers drop the initial hash scroll while html carries
+  // scroll-behavior: smooth, so a shared /#sandbox link lands at the top of a
+  // 14,000px page. 'instant' rather than 'auto' — 'auto' defers back to the CSS
+  // and animates the full 8,000px.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'instant' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
