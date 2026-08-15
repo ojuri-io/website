@@ -936,17 +936,22 @@ export function LandingB() {
     };
   }, []);
 
-  // Browsers drop the initial hash scroll while html carries
-  // scroll-behavior: smooth, so a shared /#sandbox link lands at the top of a
-  // 14,000px page. 'instant' rather than 'auto' — 'auto' defers back to the CSS
-  // and animates the full 8,000px.
+  // On a cold load Chrome undoes an early fragment scroll while html carries
+  // scroll-behavior: smooth, so a shared /#sandbox link sits at the top of a
+  // 14,000px page. Re-assert it as the page settles, and stop the moment it
+  // sticks so this never fights a reader who has started scrolling. 'instant'
+  // rather than 'auto' — 'auto' defers back to the CSS and animates the lot.
   useEffect(() => {
     const id = window.location.hash.slice(1);
     if (!id) return;
-    const frame = requestAnimationFrame(() => {
+    const jump = () => {
+      if (window.scrollY > 0) return true;
       document.getElementById(id)?.scrollIntoView({ behavior: 'instant' });
-    });
-    return () => cancelAnimationFrame(frame);
+      return window.scrollY > 0;
+    };
+    if (jump()) return;
+    const timers = [0, 100, 300, 800].map((ms) => window.setTimeout(jump, ms));
+    return () => timers.forEach(clearTimeout);
   }, []);
 
   useEffect(() => {
