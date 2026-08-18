@@ -32,6 +32,7 @@ function Rail({ active }: { active: string }) {
         })}
       </nav>
       <div className="flex flex-col gap-2.5">
+        <a href="/compare/" className="text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">Ojuri vs. SaaS</a>
         <a href="https://github.com/ojuri-io/ojuri" className="group inline-flex items-center gap-2 text-[12.5px] text-stone-400 hover:text-stone-100 no-underline transition-colors">
           <Github size={14} {...ICON} className="transition-transform duration-300 group-hover:rotate-[-8deg]" /> GitHub
         </a>
@@ -50,6 +51,7 @@ function TopBar() {
         <div className="flex items-center gap-5 text-[13px] text-stone-400">
           <a href="#how" className="no-underline hover:text-stone-100 transition-colors">How</a>
           <a href="#quickstart" className="no-underline hover:text-stone-100 transition-colors">Quickstart</a>
+          <a href="/compare/" className="hidden sm:inline-block no-underline hover:text-stone-100 transition-colors">Compare</a>
           <a href="https://github.com/ojuri-io/ojuri" className="no-underline hover:text-stone-100 transition-colors inline-flex items-center gap-1.5"><Github size={14} {...ICON} /> GitHub</a>
         </div>
       </div>
@@ -868,9 +870,9 @@ function Closing() {
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: Array<[string, string]> }) {
+function FooterCol({ title, links, span = 'md:col-span-2' }: { title: string; links: Array<[string, string]>; span?: string }) {
   return (
-    <div className="col-span-6 md:col-span-2">
+    <div className={`col-span-6 ${span}`}>
       <div className="text-[11px] uppercase tracking-label font-medium text-stone-500 mb-4">{title}</div>
       <ul className="flex flex-col gap-2.5">
         {links.map(([label, href]) => (
@@ -886,13 +888,20 @@ function FooterB() {
     <footer>
       <Shell className="py-20">
         <div className="grid grid-cols-12 gap-y-10 gap-x-6 sm:gap-x-12">
-          <div className="col-span-12 md:col-span-5">
+          <div className="col-span-12 md:col-span-3">
             <Wordmark className="text-[27px] text-stone-50" as="div" />
             <p className="mt-3 font-mono text-[11.5px] leading-[19px] text-stone-600">
               <em>Ojuri</em> (Yoruba: <em>ojúrí</em>) — “the seeing eye.”<br />A witness to every transaction.
             </p>
           </div>
+          <FooterCol title="Agents" span="md:col-span-3" links={[
+            ['RDA — real-time detection', '/docs/rda/'],
+            ['PAA — pattern analysis', '/docs/paa/'],
+            ['MLA — model learning', '/docs/mla/'],
+            ['FIA — investigation', '/docs/fia/'],
+          ]} />
           <FooterCol title="Project" links={[
+            ['Ojuri vs. SaaS', '/compare/'],
             ['Docs', 'https://github.com/ojuri-io/ojuri#readme'],
             ['GitHub', 'https://github.com/ojuri-io/ojuri'],
             ['Roadmap', 'https://github.com/ojuri-io/ojuri/blob/main/ROADMAP.md'],
