@@ -121,7 +121,7 @@ export function Compare() {
             {docsPages.map((p) => (
               <li key={p.slug}>
                 <a
-                  href={`/docs/${p.slug}`}
+                  href={`/docs/${p.slug}/`}
                   className="block border border-stone-300 rounded-md p-5 hover:border-stone-500 transition-colors no-underline group"
                 >
                   <span className="font-mono text-[11px] uppercase tracking-label text-stone-500">

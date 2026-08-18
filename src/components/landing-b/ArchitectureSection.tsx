@@ -5,6 +5,13 @@ import { ArchitectureDiagram } from '../ArchitectureDiagram';
 import { ComponentPanel } from '../ComponentPanel';
 import { Marker } from './primitives';
 
+const AGENT_DOCS: Array<[string, string]> = [
+  ['RDA — real-time detection', '/docs/rda/'],
+  ['PAA — pattern analysis', '/docs/paa/'],
+  ['MLA — model learning', '/docs/mla/'],
+  ['FIA — investigation', '/docs/fia/'],
+];
+
 /** Section 05 — the interactive Kafka topology, presented as a cream lit panel. */
 export function ArchitectureSection() {
   const [selected, setSelected] = useState<ComponentId | null>(null);
@@ -39,6 +46,18 @@ export function ArchitectureSection() {
         <p className="mt-4 font-mono text-[12.5px] text-stone-600">
           Click any component for its role, scope, and tech specifics.
         </p>
+
+        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2.5 text-[14px]">
+          {AGENT_DOCS.map(([label, href]) => (
+            <a
+              key={href}
+              href={href}
+              className="text-stone-400 hover:text-stone-100 no-underline border-b border-stone-700 hover:border-stone-400 pb-0.5 transition-colors"
+            >
+              {label}
+            </a>
+          ))}
+        </div>
 
         <div className="mt-12 bg-stone-100 text-stone-900 rounded-lg border border-stone-700 p-4 sm:p-6">
           <div className="flex flex-col lg:flex-row items-start">

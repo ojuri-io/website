@@ -7,10 +7,10 @@ import { ArchitectureDiagram } from './ArchitectureDiagram';
 import { ComponentPanel } from './ComponentPanel';
 
 const deepDives: Array<[string, string]> = [
-  ['RDA', '/docs/rda'],
-  ['PAA', '/docs/paa'],
-  ['MLA', '/docs/mla'],
-  ['FIA', '/docs/fia'],
+  ['RDA', '/docs/rda/'],
+  ['PAA', '/docs/paa/'],
+  ['MLA', '/docs/mla/'],
+  ['FIA', '/docs/fia/'],
 ];
 
 /**

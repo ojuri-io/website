@@ -79,7 +79,7 @@ export function DocPage({ slug }: DocPageProps) {
               View the source
               <ArrowUpRight size={16} strokeWidth={1.5} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Button>
-            <Button href="/compare" variant="ghost">Ojuri vs. SaaS</Button>
+            <Button href="/compare/" variant="ghost">Ojuri vs. SaaS</Button>
           </div>
 
           <nav className="mt-16 border-t border-stone-300 pt-8">
@@ -88,7 +88,7 @@ export function DocPage({ slug }: DocPageProps) {
               {others.map((p) => (
                 <li key={p.slug}>
                   <a
-                    href={`/docs/${p.slug}`}
+                    href={`/docs/${p.slug}/`}
                     className="inline-flex items-center gap-2 text-[15px] text-stone-700 hover:text-stone-900 no-underline group"
                   >
                     <span className="font-mono text-[12px] text-stone-500 uppercase tracking-label">

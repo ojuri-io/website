@@ -18,7 +18,7 @@ export function TopNav() {
         </a>
         <div className="flex items-center gap-6 sm:gap-8 text-[14px] text-stone-700">
           <a href="/#architecture" className="nav-link no-underline">Architecture</a>
-          <a href="/compare" className="nav-link no-underline hidden sm:inline-block">Compare</a>
+          <a href="/compare/" className="nav-link no-underline hidden sm:inline-block">Compare</a>
           <a href="/#changelog" className="nav-link no-underline hidden sm:inline-block">Changelog</a>
           <a
             href="https://github.com/ojuri-io/ojuri#readme"

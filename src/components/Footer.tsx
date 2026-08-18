@@ -44,11 +44,11 @@ export function Footer() {
           <FooterCol
             title="Learn"
             links={[
-              ['Ojuri vs. SaaS', '/compare'],
-              ['RDA — real-time detection', '/docs/rda'],
-              ['PAA — pattern analysis', '/docs/paa'],
-              ['MLA — model learning', '/docs/mla'],
-              ['FIA — investigation', '/docs/fia'],
+              ['Ojuri vs. SaaS', '/compare/'],
+              ['RDA — real-time detection', '/docs/rda/'],
+              ['PAA — pattern analysis', '/docs/paa/'],
+              ['MLA — model learning', '/docs/mla/'],
+              ['FIA — investigation', '/docs/fia/'],
             ]}
           />
           <FooterCol

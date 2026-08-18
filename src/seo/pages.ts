@@ -57,22 +57,24 @@ const home: PageMeta = {
 };
 
 const compare: PageMeta = {
-  path: '/compare',
-  title: 'Ojuri vs. SaaS fraud detection — open source, self-hosted alternative',
+  path: '/compare/',
+  title: 'Ojuri vs. SaaS fraud detection — open-source alternative',
   description:
-    'How Ojuri compares to hosted SaaS fraud APIs: in-process ONNX scoring at ~6ms, full data sovereignty, closed-loop retraining, and zero per-call fees under an MIT license.',
+    'How Ojuri compares to hosted SaaS fraud APIs: in-process ONNX scoring at ~6ms, full data sovereignty, and no per-call fees under an MIT license.',
   jsonLd: techArticleLd(
-    '/compare',
+    '/compare/',
     'Ojuri vs. traditional SaaS fraud detection engines',
     'An open-source, self-hosted alternative to hosted SaaS fraud APIs.',
   ),
 };
 
+// Paths carry a trailing slash: GitHub Pages 301s /docs/rda to /docs/rda/, so
+// canonicals and the sitemap must name the URL that actually serves a 200.
 const docs: PageMeta[] = docsPages.map((p) => ({
-  path: `/docs/${p.slug}`,
-  title: `${p.h1} — Ojuri ${p.eyebrow.split('·')[1]?.trim() ?? ''}`.trim(),
-  description: p.lede,
-  jsonLd: techArticleLd(`/docs/${p.slug}`, p.h1, p.lede),
+  path: `/docs/${p.slug}/`,
+  title: p.seoTitle,
+  description: p.seoDescription,
+  jsonLd: techArticleLd(`/docs/${p.slug}/`, p.h1, p.lede),
 }));
 
 export const PAGES: PageMeta[] = [home, compare, ...docs];
@@ -92,7 +94,7 @@ export interface HeadParts {
 
 export function headParts(path: string): HeadParts {
   const p = findPage(path);
-  const url = `${SITE}${p.path === '/' ? '/' : p.path}`;
+  const url = `${SITE}${p.path}`;
   const extras = [
     `<link rel="canonical" href="${url}" />`,
     `<meta property="og:title" content="${esc(p.title)}" />`,

@@ -11,6 +11,8 @@ export interface DocPageData {
   eyebrow: string;
   h1: string;
   lede: string;
+  seoTitle: string;
+  seoDescription: string;
   sections: DocSection[];
 }
 
@@ -22,6 +24,10 @@ export const docsPages: DocPageData[] = [
     h1: 'Real-time fraud detection on the authorization hot path',
     lede:
       'The Real-Time Detection Agent is the only Ojuri service that sits synchronously in front of a payment. It scores every transaction and returns an ACCEPT, REVIEW, or DECLINE verdict before the caller unblocks — no external API round-trip, no per-call fee.',
+    seoTitle:
+      'Real-time fraud detection on the hot path — Ojuri RDA',
+    seoDescription:
+      'The Real-Time Detection Agent scores each transaction in-process with ONNX-served XGBoost, returning ACCEPT, REVIEW, or DECLINE before the caller unblocks.',
     sections: [
       {
         heading: 'ONNX-served XGBoost, scored in-process',
@@ -53,6 +59,10 @@ export const docsPages: DocPageData[] = [
     h1: 'Velocity checks and fraud-ring detection, off the hot path',
     lede:
       'The Pattern Analysis Agent computes the behavioral and relationship features that a single transaction can’t reveal on its own — velocity windows, shared-device clusters, and emerging rings — entirely asynchronously, so none of it slows down authorization.',
+    seoTitle:
+      'Velocity checks and fraud-ring detection — Ojuri PAA',
+    seoDescription:
+      'The Pattern Analysis Agent computes rolling velocity windows, shared-device clusters, and emerging fraud rings asynchronously, off the authorization path.',
     sections: [
       {
         heading: 'Rolling velocity and relationship features',
@@ -77,6 +87,10 @@ export const docsPages: DocPageData[] = [
     h1: 'Drift-aware retraining with shadow-to-active promotion gates',
     lede:
       'The Model Learning Agent keeps the fraud model honest as behavior shifts. It watches for performance decay and feature drift, retrains on real labels, and gates every promotion behind statistical checks — a closed loop that static rules engines don’t have.',
+    seoTitle:
+      'Drift-aware retraining and promotion gates — Ojuri MLA',
+    seoDescription:
+      'The Model Learning Agent retrains on F1 and PSI drift signals, then gates every promotion behind a McNemar significance check and a real F1 improvement.',
     sections: [
       {
         heading: 'Detecting drift before it costs you',
@@ -101,6 +115,10 @@ export const docsPages: DocPageData[] = [
     h1: 'Explainable LLM fraud investigations, on a separate path',
     lede:
       'The Fraud Investigation Agent turns blocked transactions into plain-language case files a human analyst can act on. It runs a self-hosted language model on its own Kafka path, so it never touches — and never slows — the authorization flow.',
+    seoTitle:
+      'Explainable LLM fraud investigations — Ojuri FIA',
+    seoDescription:
+      'The Fraud Investigation Agent turns blocked transactions into plain-language case files with a self-hosted Phi-3-mini, never on the authorization path.',
     sections: [
       {
         heading: 'Investigations only on declines',
