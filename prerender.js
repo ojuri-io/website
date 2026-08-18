@@ -7,12 +7,18 @@ const root = dirname(fileURLToPath(import.meta.url));
 const dist = join(root, 'dist');
 
 const template = readFileSync(join(dist, 'index.html'), 'utf-8');
-const { render, headParts, PAGE_PATHS, SITE } = await import(
+const { render, headParts, PAGE_PATHS, NOT_FOUND_PATH, SITE } = await import(
   pathToFileURL(join(dist, 'server', 'entry-server.js')).href
 );
 
+// GitHub Pages serves /404.html for any unknown path, so that one page is a
+// file at the root rather than a directory index.
 const outPath = (route) =>
-  route === '/' ? join(dist, 'index.html') : join(dist, route, 'index.html');
+  route === '/'
+    ? join(dist, 'index.html')
+    : route === NOT_FOUND_PATH
+      ? join(dist, '404.html')
+      : join(dist, route, 'index.html');
 
 // The preloader lives in index.html but should only run on the landing page.
 // On '/', keep it and drop the marker comments; elsewhere, strip it entirely.
@@ -36,7 +42,7 @@ function applyPreloader(pageHtml, route) {
   return pageHtml;
 }
 
-for (const route of PAGE_PATHS) {
+for (const route of [...PAGE_PATHS, NOT_FOUND_PATH]) {
   const html = render(route);
   const { title, description, extras } = headParts(route);
 

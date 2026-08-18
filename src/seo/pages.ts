@@ -6,7 +6,8 @@ export interface PageMeta {
   path: string;
   title: string;
   description: string;
-  jsonLd?: Record<string, unknown>;
+  jsonLd: Record<string, unknown>[];
+  noindex?: boolean;
 }
 
 const softwareApplicationLd: Record<string, unknown> = {
@@ -38,6 +39,26 @@ const softwareApplicationLd: Record<string, unknown> = {
   },
 };
 
+const organizationLd: Record<string, unknown> = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Ojuri',
+  url: `${SITE}/`,
+  logo: `${SITE}/apple-touch-icon.png`,
+  sameAs: ['https://github.com/ojuri-io'],
+};
+
+const breadcrumbLd = (name: string, path: string): Record<string, unknown> => ({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name, item: `${SITE}${path}` },
+  ],
+});
+
+const agentName = (eyebrow: string): string => eyebrow.split('·')[1]?.trim() ?? 'Ojuri';
+
 const techArticleLd = (path: string, title: string, description: string): Record<string, unknown> => ({
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
@@ -53,7 +74,7 @@ const home: PageMeta = {
   title: 'Ojuri — Fraud detection. Open source and self-hosted.',
   description:
     'Self-hosted, multi-agent fraud detection. ONNX-served XGBoost at p99 ≈ 6ms server-side. MIT licensed.',
-  jsonLd: softwareApplicationLd,
+  jsonLd: [softwareApplicationLd, organizationLd],
 };
 
 const compare: PageMeta = {
@@ -61,11 +82,14 @@ const compare: PageMeta = {
   title: 'Ojuri vs. SaaS fraud detection — open-source alternative',
   description:
     'How Ojuri compares to hosted SaaS fraud APIs: in-process ONNX scoring at ~6ms, full data sovereignty, and no per-call fees under an MIT license.',
-  jsonLd: techArticleLd(
-    '/compare/',
-    'Ojuri vs. traditional SaaS fraud detection engines',
-    'An open-source, self-hosted alternative to hosted SaaS fraud APIs.',
-  ),
+  jsonLd: [
+    techArticleLd(
+      '/compare/',
+      'Ojuri vs. traditional SaaS fraud detection engines',
+      'An open-source, self-hosted alternative to hosted SaaS fraud APIs.',
+    ),
+    breadcrumbLd('Ojuri vs. SaaS', '/compare/'),
+  ],
 };
 
 // Paths carry a trailing slash: GitHub Pages 301s /docs/rda to /docs/rda/, so
@@ -74,14 +98,31 @@ const docs: PageMeta[] = docsPages.map((p) => ({
   path: `/docs/${p.slug}/`,
   title: p.seoTitle,
   description: p.seoDescription,
-  jsonLd: techArticleLd(`/docs/${p.slug}/`, p.h1, p.lede),
+  jsonLd: [
+    techArticleLd(`/docs/${p.slug}/`, p.h1, p.lede),
+    breadcrumbLd(agentName(p.eyebrow), `/docs/${p.slug}/`),
+  ],
 }));
+
+// Served by GitHub Pages for any unknown path, so it must never be indexed
+// and never appears in the sitemap.
+const notFound: PageMeta = {
+  path: '/404',
+  title: 'Page not found — Ojuri',
+  description:
+    'That page isn’t here. Browse the agent docs or head back to the landing page.',
+  jsonLd: [],
+  noindex: true,
+};
+
+export const NOT_FOUND_PATH = notFound.path;
 
 export const PAGES: PageMeta[] = [home, compare, ...docs];
 
 export const PAGE_PATHS: string[] = PAGES.map((p) => p.path);
 
-const findPage = (path: string): PageMeta => PAGES.find((p) => p.path === path) ?? home;
+const findPage = (path: string): PageMeta =>
+  [...PAGES, notFound].find((p) => p.path === path) ?? home;
 
 const esc = (s: string): string =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -95,16 +136,16 @@ export interface HeadParts {
 export function headParts(path: string): HeadParts {
   const p = findPage(path);
   const url = `${SITE}${p.path}`;
+  const indexing = p.noindex
+    ? ['<meta name="robots" content="noindex" />']
+    : [`<link rel="canonical" href="${url}" />`, `<meta property="og:url" content="${url}" />`];
   const extras = [
-    `<link rel="canonical" href="${url}" />`,
+    ...indexing,
     `<meta property="og:title" content="${esc(p.title)}" />`,
     `<meta property="og:description" content="${esc(p.description)}" />`,
-    `<meta property="og:url" content="${url}" />`,
     `<meta name="twitter:title" content="${esc(p.title)}" />`,
     `<meta name="twitter:description" content="${esc(p.description)}" />`,
+    ...p.jsonLd.map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`),
   ];
-  if (p.jsonLd) {
-    extras.push(`<script type="application/ld+json">${JSON.stringify(p.jsonLd)}</script>`);
-  }
   return { title: esc(p.title), description: esc(p.description), extras: extras.join('\n    ') };
 }
