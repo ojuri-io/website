@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -6,7 +7,7 @@ const root = dirname(fileURLToPath(import.meta.url));
 const dist = join(root, 'dist');
 
 const template = readFileSync(join(dist, 'index.html'), 'utf-8');
-const { render, headParts, PAGE_PATHS } = await import(
+const { render, headParts, PAGE_PATHS, SITE } = await import(
   pathToFileURL(join(dist, 'server', 'entry-server.js')).href
 );
 
@@ -54,5 +55,27 @@ for (const route of PAGE_PATHS) {
   writeFileSync(file, page);
   console.log(`prerendered ${route} → ${file.replace(dist + '/', 'dist/')}`);
 }
+
+const lastmod = (() => {
+  try {
+    return execSync('git log -1 --format=%cs', { encoding: 'utf-8' }).trim();
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
+})();
+
+const sitemap = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  ...PAGE_PATHS.map(
+    (route) =>
+      `  <url>\n    <loc>${SITE}${route}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`,
+  ),
+  '</urlset>',
+  '',
+].join('\n');
+
+writeFileSync(join(dist, 'sitemap.xml'), sitemap);
+console.log(`wrote sitemap.xml (${PAGE_PATHS.length} urls, lastmod ${lastmod})`);
 
 rmSync(join(dist, 'server'), { recursive: true, force: true });
