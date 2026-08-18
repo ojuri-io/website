@@ -26,13 +26,12 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#FAF6F0" />
 
-    <!-- Fonts (Google Fonts — Source Serif 4, Inter, JetBrains Mono). -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts — self-hosted woff2 under /fonts, declared in src/styles/fonts.css.
+         Only the latin subsets are preloaded; latin-ext and greek are fetched
+         on demand by unicode-range. -->
+    <link rel="preload" href="/fonts/source-serif-4-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Umami — cookieless analytics. -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="cbe11628-be87-48a4-87ea-f974b948115a"></script>
