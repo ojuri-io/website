@@ -4,7 +4,12 @@ import { Wordmark } from '../ui/Wordmark';
 import { EMAIL_RE, submitEmailSignup } from '../../utils/emailSignup';
 import { ArchitectureSection } from './ArchitectureSection';
 import { SandboxSection } from './SandboxSection';
-import { CURRENT_RELEASE, CURRENT_VERSION, CURRENT_VERSION_SHORT } from '../../data/changelog';
+import {
+  CURRENT_RELEASE,
+  CURRENT_VERSION,
+  CURRENT_VERSION_SHORT,
+  RELEASES as RELEASE_DATA,
+} from '../../data/changelog';
 import { Marker, SECTIONS, Shell } from './primitives';
 
 // Ojuri landing — Direction B: an ink-first operations console. Fixed section
@@ -576,105 +581,22 @@ interface Release {
   date: string;
   state?: 'next' | 'current';
   head: string;
-  body: string;
+  body: ReactNode;
   points: string[];
   note?: string;
 }
 
-const RELEASES: Release[] = [
-  {
-    tag: 'Next', date: 'On the roadmap', state: 'next',
-    head: 'Where we are headed',
-    body: 'The core loop is proven. Next is making it easier to deploy at scale and to integrate with existing payment flows.',
-    points: [
-      'Canary traffic split by API-key cohort',
-      'Helm chart and Terraform module for production deploys',
-      'TypeScript and Python client SDKs',
-    ],
-  },
-  {
-    tag: 'v1.5.1', date: 'August 11, 2026', state: 'current',
-    head: 'Fixes found by running it',
-    body: 'Standing the public sandbox up exercised paths that unit tests do not, and turned up five faults — two of which made a feature look like it worked while doing nothing at all. All are fixed and verified against the running environment.',
-    points: [
-      'API keys are saved. The dashboard showed you a key and quietly discarded it, so every request made with one was rejected',
-      'The API stays reachable after a restart — the proxy kept sending requests to an address the detection agent no longer had',
-      'A server that is merely unreachable no longer reports itself as misconfigured, which sent operators to change a setting that was already correct',
-      'A self-stopping deployment now really does stop itself; the timers were being skipped whenever the stack failed to start',
-    ],
-    note: 'Verified end to end on the live sandbox: sign in, issue a key, score a transaction, and read the decision back with its rule and audit trail.',
-  },
-  {
-    tag: 'v1.5.0', date: 'August 11, 2026',
-    head: 'Run it without installing it',
-    body: 'A one-command deployment that puts a complete Ojuri on a single cloud machine, behind HTTPS, and stops itself when nobody is using it. Standing it up surfaced three faults that made services unrunnable rather than merely awkward — each is fixed, and each was verified on the running system rather than in a test.',
-    points: [
-      'A public sandbox you can sign into and POST to, which sleeps when idle and wakes from a button on the page',
-      'The operator dashboard can finally be served from the shipped stack — it had a published image but nothing wired to run it',
-      'Production mode starts: the detection agent refused to boot because a required setting never reached it',
-      'The learning agent runs on current servers again, and investigation follow-ups answer the question asked instead of inventing their own',
-    ],
-    note: 'Follow-up answers went from 248 seconds and four invented questions to 67 seconds and a straight answer — the model had been generating text nobody would read.',
-  },
-  {
-    tag: 'v1.4.0', date: 'August 9, 2026',
-    head: 'Every line reviewed',
-    body: 'We reviewed the entire platform line by line and fixed all 45 issues we found, verifying each fix on a running system. The release also adds an optional stronger audit mode: every decision is permanently recorded before the customer gets an answer, so no record is ever lost — even if a server crashes mid-request.',
-    points: [
-      'If the scoring engine fails, transactions go to human review instead of being declined — a customer is never rejected because of an internal outage',
-      'Removing someone’s access or changing their role now takes effect immediately, not at their next login',
-      'Choose how many detection servers to run with a single setting — no config surgery to scale up',
-      'More trustworthy scores and safer operations: calibrated probabilities now reach serving, and the graph service protects itself from being run twice by mistake',
-    ],
-    note: 'Verified under load after the fixes: 2,000 requests, every single one succeeded, and 99 out of 100 answered within 85 ms — down from 295 ms before.',
-  },
-  {
-    tag: 'v1.3.0', date: 'July 7, 2026',
-    head: 'Measured, then hardened',
-    body: 'An independent efficacy validation drove this release: correctness gaps between the platform and its own contracts are fixed, and new behavioral rules turn the graph and velocity signals into verdicts the model misses on trusted, authenticated traffic.',
-    points: [
-      'Behavioral rule pack — velocity spikes and fan-out sprays routed to review, guarded so mobile-money agents and payroll stay clean',
-      'Fresh installs now register the shipped model and per-transaction-type thresholds out of the box',
-      'Context-field dropout in training, plus a load-time probe that flags a model keying on integration context instead of behaviour',
-      'Reworked Sentinel rule editor: catalogue-aware variable validation and a searchable, grouped variable picker',
-    ],
-    note: 'The behavioral rules lift velocity-anomaly recall from 0 to 0.80 in the validation harness — with zero added false positives on agent-network, payroll, airtime, and remittance traffic.',
-  },
-  {
-    tag: 'v1.2.0', date: 'July 2, 2026',
-    head: 'The learning loop closes',
-    body: 'Fraud outcomes now flow back into the model. Chargebacks and disputes become training labels, the model retrains on verified outcomes, and detection improves per deployment.',
-    points: [
-      'Labels API — chargebacks, disputes, and reviewer overrides feed retraining',
-      'Automatic retraining on verified labels, with temporal train/test splits',
-      'A binding deployment gate: a new model ships only if it genuinely beats the current one',
-      'Live shadow scoring and a REVIEW band that turns uncertainty into labels',
-    ],
-    note: 'Validated in a 128k-transaction benchmark: 34% of fraud caught cold → 98.8% after one label-driven retrain, at a 1.1% false-positive rate.',
-  },
-  {
-    tag: 'v1.1.0', date: 'June 22, 2026',
-    head: 'Hardening and adopter tooling',
-    body: 'The first tagged release: durable graph state, richer rule and threshold defaults, and the tooling to bring your own data.',
-    points: [
-      'Durable transaction-graph state that survives restarts',
-      'FATF rule pack, isotonic score calibration, configurable training modes',
-      'Chunked training-data import so adopters can load their own history',
-      'Per-segment threshold defaults and rule visibility in the audit log',
-    ],
-  },
-  {
-    tag: 'v1.0.0', date: 'June 7, 2026',
-    head: 'The platform launches',
-    body: 'Four cooperating agents, decoupled by Kafka: real-time scoring, off-path graph analysis, drift monitoring, and LLM investigations — self-hosted, MIT-licensed, one docker compose up.',
-    points: [
-      'Millisecond ONNX scoring on the authorization path',
-      'Hot-reloaded rules engine, per-segment thresholds, decision audit log',
-      'FIA investigation reports for blocked transactions, on a separate path',
-      'Sentinel operator dashboard: live decisions, audit log, model registry',
-    ],
-  },
-];
+// Newest first, from the one list the header badge also reads, so the two
+// cannot name different versions.
+const RELEASES: Release[] = [...RELEASE_DATA].reverse().map((r) => ({
+  tag: r.version,
+  date: r.date,
+  state: r.upcoming ? ('next' as const) : r.current ? ('current' as const) : undefined,
+  head: r.title,
+  body: r.summary,
+  points: r.highlights,
+  note: r.metric,
+}));
 
 function Changelog() {
   return (

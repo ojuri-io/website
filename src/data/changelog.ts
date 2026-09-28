@@ -118,6 +118,34 @@ export const RELEASES: Release[] = [
     ],
     metric:
       'Verified end to end on the live sandbox: sign in, issue a key, score a transaction, and read the decision back with its rule and audit trail.',
+  },
+  {
+    version: 'v1.6.0',
+    date: 'August 15, 2026',
+    title: 'The public sandbox gets a front door',
+    summary:
+      'A deployment that seeded a shared demo account now says so on its own sign-in page, so a visitor is not left guessing which credentials a public trial expects. Additive only: no migrations, no schema changes, and nothing changes on a private install.',
+    highlights: [
+      'The sign-in page prefills the shared demo account where one exists, and explains that it is shared',
+      'The answer comes from the accounts that actually exist, so a setting added after the fact cannot advertise an account nobody can use',
+      'Private installs are untouched, keeping the admin prefill and the first-run instructions',
+      'The demo password is never returned by the API; an optional setting links to wherever it is published instead',
+    ],
+  },
+  {
+    version: 'v1.7.0',
+    date: 'September 28, 2026',
+    title: 'One command, and a client to call it with',
+    summary:
+      'Getting Ojuri running no longer starts with cloning a repository. One command in an empty directory brings the whole stack up, and a published Node client removes the guesswork from calling it and from verifying the webhooks it sends back.',
+    highlights: [
+      'npx @ojuri/cli up brings the stack up in any empty directory, with no clone: it generates your secrets, pulls the images, waits for the database, and prints a runnable example',
+      'A new configuration file describes the stack in one place, and refuses arrangements the architecture cannot serve rather than letting them fail quietly in production',
+      '@ojuri/sdk gives Node callers typed requests and responses, safe retries, and a verifier for the signed webhooks, which is the part most easily got wrong by hand',
+      'Both existing install paths are unchanged and still supported; this is an additional option, not a replacement',
+    ],
+    metric:
+      'Proved in CI the way an adopter would experience it: the published package is installed into an empty directory with no repository anywhere above it, the stack boots, and a transaction comes back scored.',
     current: true,
   },
   {
@@ -129,7 +157,7 @@ export const RELEASES: Release[] = [
     highlights: [
       'Canary traffic split by API-key cohort',
       'Helm chart and Terraform module for production deploys',
-      'TypeScript and Python client SDKs',
+      'A Python client, alongside the Node one that shipped in v1.7',
     ],
     upcoming: true,
   },

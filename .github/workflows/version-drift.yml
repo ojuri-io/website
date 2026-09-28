@@ -1,0 +1,82 @@
+name: Version drift
+
+# The release copy on this site is editorial, so it cannot be generated from
+# the platform's tags. It can be nagged about: this compares the version the
+# site announces against the newest release in the main repository and opens an
+# issue when they disagree. The site sat three releases behind before this
+# existed, which nothing surfaced.
+
+on:
+  schedule:
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  compare:
+    name: site version against the latest release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read the version this site announces
+        id: site
+        run: |
+          # CURRENT_VERSION derives from whichever release is marked current,
+          # so read the marked entry rather than parsing the export.
+          VERSION=$(node -e "
+            const s = require('fs').readFileSync('src/data/changelog.ts', 'utf8');
+            const blocks = s.split(/\{\s*\n/);
+            const current = blocks.find((b) => /current:\s*true/.test(b));
+            const m = current && current.match(/version:\s*'([^']+)'/);
+            if (!m) { console.error('No release marked current'); process.exit(1); }
+            process.stdout.write(m[1]);
+          ")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Site announces $VERSION"
+
+      - name: Read the latest platform release
+        id: platform
+        run: |
+          TAG=$(curl -fsSL https://api.github.com/repos/ojuri-io/ojuri/releases/latest \
+            | node -e "
+              let raw=''; process.stdin.on('data',d=>raw+=d).on('end',()=>{
+                const t = JSON.parse(raw).tag_name;
+                if (!t) { console.error('No tag_name in response'); process.exit(1); }
+                process.stdout.write(t);
+              });")
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Platform released $TAG"
+
+      - name: Open or update an issue when they disagree
+        if: steps.site.outputs.version != steps.platform.outputs.tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SITE: ${{ steps.site.outputs.version }}
+          TAG: ${{ steps.platform.outputs.tag }}
+        run: |
+          TITLE="Site announces $SITE, platform is on $TAG"
+          EXISTING=$(gh issue list --label version-drift --state open \
+            --json number,title --jq ".[] | select(.title==\"$TITLE\") | .number" | head -1)
+          BODY=$(printf '%s\n' \
+            "\`src/data/changelog.ts\` marks **$SITE** as current. The newest release in" \
+            "\`ojuri-io/ojuri\` is **$TAG**." \
+            "" \
+            "Release copy is written by hand, so this cannot be updated automatically." \
+            "Add the missing entries, move \`current: true\`, and this issue closes on the" \
+            "next run." \
+            "" \
+            "The landing page timeline renders from the same array, so updating it in one" \
+            "place is enough.")
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "Still drifting: $SITE vs $TAG."
+          else
+            gh issue create --title "$TITLE" --label version-drift --body "$BODY"
+          fi
+
+      - name: Say so when they match
+        if: steps.site.outputs.version == steps.platform.outputs.tag
+        run: echo "In step, both on ${{ steps.site.outputs.version }}."
