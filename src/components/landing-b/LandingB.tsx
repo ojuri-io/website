@@ -403,10 +403,12 @@ function UnderTheHood() {
 }
 
 // ── 07 · Quickstart ───────────────────────────────────────────────
-const SHELL_CMD = `$ git clone https://github.com/ojuri-io/ojuri.git && cd ojuri
-$ cp .env.example .env
-$ docker compose up -d --build
-[+] Running 8/8  nginx  postgres  redis  kafka  rda  paa  prometheus  grafana`;
+const SHELL_CMD = `$ npx @ojuri/cli up
+
+Ojuri is up.
+
+  Predict   http://localhost/v1/predict
+  Grafana   http://localhost:3001`;
 
 const REQUEST_CMD = `$ curl -X POST http://localhost/v1/predict \\
     -H 'Content-Type: application/json' \\
@@ -510,17 +512,17 @@ function CodeSection() {
           Scoring a live transaction in three steps.
         </h2>
         <p className="mt-6 text-[16.5px] leading-[27px] text-stone-400 max-w-measure">
-          One repo, one <span className="font-mono text-[14.5px] text-stone-200">docker compose up</span>, one POST.
-          The response carries the decision, the probability, the model version,
-          and the reason codes that drove the verdict — each with its feature
-          contribution.
+          One command, one POST. No clone: the compose file and the assets it
+          mounts travel in the package. The response carries the decision, the
+          probability, the model version, and the reason codes that drove the
+          verdict — each with its feature contribution.
         </p>
 
         <div className="mt-14 flex flex-col gap-12">
-          <Step n="1" title="Clone and boot the stack." note="Copy .env.example to .env first — RDA won't start without AUTH_JWT_SECRET. Brings up NGINX, Postgres, Redis, Kafka, and the always-on RDA and PAA agents. MLA and FIA are opt-in.">
+          <Step n="1" title="Bring the stack up." note="Runs in any empty directory and needs Docker and Node 20. Generates your secrets, pulls the images, waits for the database, then prints a runnable curl and your admin password. Brings up NGINX, Postgres, Redis, Kafka, and the always-on RDA and PAA agents; MLA and FIA are opt-in. Prefer to see every moving part? Clone the repo and run docker compose yourself — that path is unchanged and still supported.">
             <CodeBlock id="shell" label="Shell" body={SHELL_CMD} withCaret copiedKey={copiedKey} onCopy={copy} />
           </Step>
-          <Step n="2" title="POST a transaction." note="transaction_id, sender_id, receiver_id, amount, transaction_type, and timestamp (epoch ms) are required. Everything else is optional context — device, geography, identity, channel — and ~40 such fields sharpen the score when supplied. Pass transaction_id as Idempotency-Key for replay-safe POSTs.">
+          <Step n="2" title="POST a transaction." note="transaction_id, sender_id, receiver_id, amount, transaction_type, and timestamp (epoch ms) are required. Everything else is optional context — device, geography, identity, channel — and ~40 such fields sharpen the score when supplied. Pass transaction_id as Idempotency-Key for replay-safe POSTs. From Node, npm install @ojuri/sdk wraps this call with typed requests, retries and webhook signature verification.">
             <CodeBlock id="request" label="Request" body={REQUEST_CMD} copiedKey={copiedKey} onCopy={copy} />
           </Step>
           <Step n="3" title="Read the verdict and its lineage." note="decision is ACCEPT, REVIEW, or DECLINE. decision_source is ML, PRE_RULE, or POST_RULE. Each reason code carries its description, feature contribution, and observed value.">
@@ -738,8 +740,7 @@ function Closing() {
           Bears witness to every transaction.
         </p>
         <p className="mt-5 max-w-measure text-[15.5px] leading-[26px] text-stone-500">
-          Self-hosted, MIT-licensed, in your boundary. One repo, one
-          <span className="font-mono text-[13.5px] text-stone-300"> docker compose up</span>, one POST.
+          Self-hosted, MIT-licensed, in your boundary. One command, one POST.
         </p>
 
         <div className="mt-10 flex items-center gap-3 flex-wrap">
